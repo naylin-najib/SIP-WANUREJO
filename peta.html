@@ -1,0 +1,1711 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Peta | SIP Wanurejo</title>
+
+    <!-- LEAFLET CSS -->
+    <link rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font: 14px system-ui, sans-serif;
+            color: #243b35;
+            background: #f5f7f5;
+        }
+
+        header {
+            background: #17483e;
+            color: white;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            min-height: 65px;
+        }
+
+        header a {
+            color: white;
+            text-decoration: none;
+        }
+
+        header a:hover {
+            text-decoration: underline;
+        }
+
+        main {
+            display: flex;
+            height: calc(100dvh - 65px);
+        }
+
+        aside {
+            width: 310px;
+            flex-shrink: 0;
+            overflow: auto;
+            padding: 20px;
+            background: white;
+            border-right: 1px solid #ddd;
+        }
+
+        #map {
+            flex: 1;
+            min-width: 0;
+        }
+
+        h2 {
+            font-size: 17px;
+            margin-top: 22px;
+            margin-bottom: 12px;
+        }
+
+        h2:first-child {
+            margin-top: 0;
+        }
+
+        h4 {
+            font-size: 13px;
+            margin: 15px 0 9px;
+        }
+
+        label {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 0;
+            cursor: pointer;
+        }
+
+        input[type="checkbox"] {
+            accent-color: #17483e;
+            width: 15px;
+            height: 15px;
+        }
+
+        small {
+            color: #667;
+            line-height: 1.5;
+        }
+
+        .legend-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 7px 0;
+            font-size: 12px;
+        }
+
+        .swatch {
+            display: inline-block;
+            flex-shrink: 0;
+            width: 25px;
+            height: 15px;
+            border: 1px solid #777;
+        }
+
+        .legend-line {
+            display: inline-block;
+            flex-shrink: 0;
+            width: 25px;
+            height: 0;
+        }
+
+        .legend-note {
+            display: block;
+            font-size: 11px;
+            color: #667;
+            margin-top: 10px;
+            line-height: 1.5;
+        }
+
+        #status {
+            white-space: pre-line;
+            color: #53665f;
+            font-size: 12px;
+            padding: 10px;
+            background: #eef4ef;
+            border-radius: 5px;
+            line-height: 1.6;
+        }
+
+        button,
+        select {
+            padding: 9px;
+            border: 1px solid #bbb;
+            border-radius: 5px;
+            background: white;
+            cursor: pointer;
+            font: inherit;
+        }
+
+        select {
+            width: 100%;
+            margin-bottom: 8px;
+        }
+
+        #home {
+            width: 100%;
+            color: white;
+            background: #17483e;
+            border: none;
+        }
+
+        #home:hover {
+            background: #246354;
+        }
+
+        .popup-title {
+            font-size: 14px;
+            color: #17483e;
+            padding-bottom: 7px;
+            margin-bottom: 7px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .popup-row {
+            margin: 5px 0;
+            line-height: 1.5;
+        }
+
+        .popup-label {
+            font-weight: 600;
+        }
+
+        .layer-error {
+            color: #b42318;
+            font-size: 11px;
+        }
+
+        @media (max-width: 650px) {
+
+            header {
+                font-size: 12px;
+            }
+
+            main {
+                flex-direction: column;
+            }
+
+            aside {
+                width: 100%;
+                max-height: 35vh;
+                border-right: none;
+                border-bottom: 1px solid #ddd;
+            }
+
+            #map {
+                min-height: 45vh;
+            }
+
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <!-- =====================================
+         HEADER
+    ====================================== -->
+
+    <header>
+
+        <strong>
+            SIP WANUREJO | Peta Interaktif
+        </strong>
+
+        <a href="index.html">
+            Beranda
+        </a>
+
+    </header>
+
+
+    <!-- =====================================
+         HALAMAN UTAMA
+    ====================================== -->
+
+    <main>
+
+        <aside>
+
+            <h2>Layer Peta</h2>
+
+            <div id="layers"></div>
+
+            <h2>Basemap</h2>
+
+            <select id="base">
+
+                <option value="osm">
+                    OpenStreetMap
+                </option>
+
+                <option value="sat">
+                    Citra Satelit
+                </option>
+
+            </select>
+
+            <button id="home">
+                Ke Wanurejo
+            </button>
+
+            <h2>Legenda</h2>
+
+            <div id="legend"></div>
+
+            <h2>Status Data</h2>
+
+            <div id="status" role="status">
+                Memuat data...
+            </div>
+
+        </aside>
+
+        <div id="map"></div>
+
+    </main>
+
+
+    <!-- LEAFLET JAVASCRIPT -->
+
+    <script
+        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+    </script>
+
+
+    <script>
+
+        // ==========================================
+        // 1. INISIALISASI PETA
+        // ==========================================
+
+        const map = L.map('map', {
+
+            zoomControl: true,
+
+            minZoom: 8,
+
+            maxZoom: 19
+
+        }).setView(
+
+            [-7.61, 110.22],
+
+            14
+
+        );
+
+
+        // ==========================================
+        // 2. BASEMAP
+        // ==========================================
+
+        const bases = {
+
+            osm: L.tileLayer(
+
+                'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+
+                {
+
+                    maxZoom: 19,
+
+                    attribution:
+                        '&copy; OpenStreetMap contributors'
+
+                }
+
+            ),
+
+            sat: L.tileLayer(
+
+                'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+
+                {
+
+                    maxZoom: 19,
+
+                    attribution:
+                        'Tiles &copy; Esri and imagery providers'
+
+                }
+
+            )
+
+        };
+
+
+        let current = bases.osm.addTo(map);
+
+
+        document.getElementById('base').onchange = e => {
+
+            map.removeLayer(current);
+
+            current = bases[e.target.value].addTo(map);
+
+        };
+
+
+        // SKALA PETA
+
+        L.control.scale({
+
+            imperial: false,
+
+            metric: true,
+
+            position: 'bottomleft'
+
+        }).addTo(map);
+
+
+        // ==========================================
+        // 3. SIMBOLOGI POLA RUANG
+        // ==========================================
+        // Klasifikasi menggunakan atribut KODE_ZON.
+        // Warna sementara mengikuti coding sebelumnya.
+        // ==========================================
+
+        const zones = {
+
+            BA: ['Badan Air', '#66BDE8'],
+
+            BJ: ['Badan Jalan', '#B6B6B6'],
+
+            CB: ['Cagar Budaya', '#9873AE'],
+
+            K: ['Perdagangan dan Jasa', '#E85B55'],
+
+            KT: ['KT', '#B97D58'],
+
+            P: ['Pertanian', '#A5CF68'],
+
+            PL: ['PL', '#438B55'],
+
+            R: ['Perumahan', '#F5DF59'],
+
+            RTH: ['Ruang Terbuka Hijau', '#35A45B'],
+
+            SPU: ['Sarana Pelayanan Umum', '#BD91CF'],
+
+            W: ['Pariwisata', '#E6A15B']
+
+        };
+
+
+        // ==========================================
+        // 4. SIMBOLOGI ZONA NILAI TANAH
+        // ==========================================
+        // Adaptasi lima kelas gradasi hijau-merah.
+        // Nilai rendah  : hijau
+        // Nilai sedang  : kuning
+        // Nilai tinggi  : merah
+        // ==========================================
+
+        const znt = {
+
+            '100.000-200.000': '#38A850',
+
+            '200.000-500.000': '#9BD950',
+
+            '500.000-1.000.000': '#FFDD50',
+
+            '1.000.000-2.000.000': '#FF9150',
+
+            '2.000.000-5.000.000': '#FF0050'
+
+        };
+
+
+        // NORMALISASI ATRIBUT ZNT
+
+        function normalizeZNT(value) {
+
+            return String(value ?? '')
+
+                .replace(/Rp/gi, '')
+
+                .replace(/\s/g, '')
+
+                .replace(/[–—−]/g, '-')
+
+                .trim();
+
+        }
+
+
+        // FORMAT LEGENDA ZNT
+
+        function formatZNT(value) {
+
+            const parts = value.split('-');
+
+            if (parts.length === 2) {
+
+                return 'Rp' + parts[0] +
+                    ' – Rp' + parts[1];
+
+            }
+
+            return value;
+
+        }
+
+
+        // ==========================================
+        // 5. SIMBOLOGI JARINGAN JALAN
+        // ==========================================
+
+        const road = p => {
+
+            const n = String(
+
+                p.NAMOBJ || ''
+
+            ).toLowerCase();
+
+
+            if (
+
+                n.includes('kereta') ||
+
+                String(p.ORDE03) === '22021000'
+
+            ) {
+
+                return [
+                    'Jalur kereta',
+                    '#555555',
+                    2
+                ];
+
+            }
+
+
+            if (n.includes('arteri')) {
+
+                return [
+                    'Jalan arteri',
+                    '#A62C36',
+                    5
+                ];
+
+            }
+
+
+            if (
+
+                n.includes('kolektor') ||
+
+                String(p.ORDE03) === '22011200'
+
+            ) {
+
+                return [
+                    'Jalan kolektor',
+                    '#D95335',
+                    4
+                ];
+
+            }
+
+
+            if (
+
+                n.includes('lokal') ||
+
+                String(p.ORDE03) === '22011300'
+
+            ) {
+
+                return [
+                    'Jalan lokal',
+                    '#E5A335',
+                    2.5
+                ];
+
+            }
+
+
+            return [
+                'Jaringan lainnya',
+                '#888888',
+                2
+            ];
+
+        };
+
+
+        // ==========================================
+        // 6. STYLE POLIGON
+        // ==========================================
+
+        const polygon = (
+
+            color,
+
+            fillColor,
+
+            weight = 0.7,
+
+            fillOpacity = 0.85
+
+        ) => ({
+
+            color,
+
+            fillColor,
+
+            weight,
+
+            fillOpacity
+
+        });
+
+
+        // ==========================================
+        // 7. DEFINISI TUJUH LAYER GEOJSON
+        // ==========================================
+
+        const defs = [
+
+
+            // 1. POLA RUANG
+
+            [
+
+                'pola_ruang',
+
+                'Pola Ruang',
+
+                false,
+
+                10,
+
+                p => polygon(
+
+                    '#666666',
+
+                    zones[
+                        String(p.KODE_ZON || '')
+                            .trim()
+                            .toUpperCase()
+                    ]?.[1] || '#CCCCCC',
+
+                    0.7,
+
+                    0.85
+
+                )
+
+            ],
+
+
+            // 2. ZONA NILAI TANAH
+
+            [
+
+                'znt_wanurejo',
+
+                'Zona Nilai Tanah',
+
+                false,
+
+                11,
+
+                p => polygon(
+
+                    '#666666',
+
+                    znt[
+                        normalizeZNT(p.ZNT)
+                    ] || '#CCCCCC',
+
+                    0.8,
+
+                    0.9
+
+                )
+
+            ],
+
+
+            // 3. PERSIL TANAH
+
+            [
+
+                'persil_wanurejo',
+
+                'Persil Tanah',
+
+                true,
+
+                20,
+
+                p => polygon(
+
+                    '#4682A9',
+
+                    '#B4DEF4',
+
+                    1.2,
+
+                    0.15
+
+                )
+
+            ],
+
+
+            // 4. SUNGAI
+
+            [
+
+                'sungai',
+
+                'Sungai',
+
+                true,
+
+                30,
+
+                p => polygon(
+
+                    '#329DD9',
+
+                    '#79C9EF',
+
+                    2,
+
+                    0.65
+
+                )
+
+            ],
+
+
+            // 5. JARINGAN JALAN
+
+            [
+
+                'jaringan_jalan',
+
+                'Jaringan Jalan',
+
+                true,
+
+                40,
+
+                p => ({
+
+                    color: road(p)[1],
+
+                    weight: road(p)[2],
+
+                    dashArray:
+
+                        road(p)[0] === 'Jalur kereta'
+
+                            ? '6 4'
+
+                            : null
+
+                })
+
+            ],
+
+
+            // 6. ADMINISTRASI BOROBUDUR
+
+            [
+
+                'adm_borobudur',
+
+                'Administrasi Borobudur',
+
+                true,
+
+                50,
+
+                p => ({
+
+                    color: '#555555',
+
+                    weight: 1.6,
+
+                    dashArray: '7 5',
+
+                    fill: false
+
+                })
+
+            ],
+
+
+            // 7. ADMINISTRASI WANUREJO
+
+            [
+
+                'adm_wanurejo',
+
+                'Administrasi Wanurejo',
+
+                true,
+
+                60,
+
+                p => ({
+
+                    color: '#793AB0',
+
+                    weight: 3,
+
+                    fill: false
+
+                })
+
+            ]
+
+        ];
+
+
+        // ==========================================
+        // 8. VARIABEL STATUS DAN LAYER
+        // ==========================================
+
+        const status = document.getElementById('status');
+
+        const legend = document.getElementById('legend');
+
+        const loaded = {};
+
+        const active = {};
+
+        const checks = {};
+
+        const errors = [];
+
+        const zoneNames = {};
+
+        let count = 0;
+
+        let finished = 0;
+
+        let unknownZNT = false;
+
+        let unknownZone = false;
+
+
+        // ==========================================
+        // 9. PEMBUATAN SIMBOL LEGENDA
+        // ==========================================
+
+        function legendItem(
+
+            name,
+
+            color,
+
+            type = 'polygon',
+
+            weight = 2,
+
+            dashed = false
+
+        ) {
+
+            const row = document.createElement('div');
+
+            row.className = 'legend-row';
+
+
+            const sw = document.createElement('span');
+
+
+            if (type === 'line') {
+
+                sw.className = 'legend-line';
+
+                sw.style.borderTop =
+
+                    weight + 'px ' +
+
+                    (dashed ? 'dashed ' : 'solid ') +
+
+                    color;
+
+            } else {
+
+                sw.className = 'swatch';
+
+                sw.style.background = color;
+
+            }
+
+
+            row.append(
+
+                sw,
+
+                document.createTextNode(name)
+
+            );
+
+
+            legend.append(row);
+
+        }
+
+
+        // CATATAN LEGENDA
+
+        function legendNote(text) {
+
+            const note = document.createElement('small');
+
+            note.className = 'legend-note';
+
+            note.textContent = text;
+
+            legend.append(note);
+
+        }
+
+
+        // ==========================================
+        // 10. LEGENDA DINAMIS
+        // ==========================================
+
+        function updateLegend() {
+
+            legend.replaceChildren();
+
+
+            if (!Object.values(active).some(Boolean)) {
+
+                legendNote('Tidak ada layer aktif.');
+
+                return;
+
+            }
+
+
+            for (const [id, name] of defs) {
+
+                if (!active[id]) continue;
+
+
+                const h = document.createElement('h4');
+
+                h.textContent = name;
+
+                legend.append(h);
+
+
+                // LEGENDA POLA RUANG
+
+                if (id === 'pola_ruang') {
+
+                    Object.entries(zones).forEach(
+
+                        ([k, v]) => legendItem(
+
+                            k + ' — ' +
+
+                            (zoneNames[k] || v[0]),
+
+                            v[1]
+
+                        )
+
+                    );
+
+
+                    if (unknownZone) {
+
+                        legendItem(
+
+                            'Tidak terklasifikasi',
+
+                            '#CCCCCC'
+
+                        );
+
+                    }
+
+
+                    legendNote(
+
+                        'Klasifikasi berdasarkan kode zona (KODE_ZON).'
+
+                    );
+
+                }
+
+
+                // LEGENDA ZONA NILAI TANAH
+
+                else if (id === 'znt_wanurejo') {
+
+                    Object.entries(znt).forEach(
+
+                        ([k, v]) => legendItem(
+
+                            formatZNT(k),
+
+                            v
+
+                        )
+
+                    );
+
+
+                    if (unknownZNT) {
+
+                        legendItem(
+
+                            'Tidak terklasifikasi',
+
+                            '#CCCCCC'
+
+                        );
+
+                    }
+
+
+                    legendNote(
+
+                        'Hijau: nilai rendah. ' +
+
+                        'Kuning: nilai menengah. ' +
+
+                        'Merah: nilai tinggi.'
+
+                    );
+
+
+                    legendNote(
+
+                        'Sumber kelas: atribut ZNT Desa Wanurejo. ' +
+
+                        'Simbologi: adaptasi gradasi lima kelas.'
+
+                    );
+
+                }
+
+
+                // LEGENDA JARINGAN JALAN
+
+                else if (id === 'jaringan_jalan') {
+
+                    legendItem(
+
+                        'Jalan arteri',
+
+                        '#A62C36',
+
+                        'line',
+
+                        5
+
+                    );
+
+
+                    legendItem(
+
+                        'Jalan kolektor',
+
+                        '#D95335',
+
+                        'line',
+
+                        4
+
+                    );
+
+
+                    legendItem(
+
+                        'Jalan lokal',
+
+                        '#E5A335',
+
+                        'line',
+
+                        2.5
+
+                    );
+
+
+                    legendItem(
+
+                        'Jalur kereta',
+
+                        '#555555',
+
+                        'line',
+
+                        2,
+
+                        true
+
+                    );
+
+
+                    legendItem(
+
+                        'Jaringan lainnya',
+
+                        '#888888',
+
+                        'line',
+
+                        2
+
+                    );
+
+                }
+
+
+                // LEGENDA PERSIL
+
+                else if (id === 'persil_wanurejo') {
+
+                    legendItem(
+
+                        'Bidang tanah',
+
+                        '#B4DEF4'
+
+                    );
+
+                }
+
+
+                // LEGENDA SUNGAI
+
+                else if (id === 'sungai') {
+
+                    legendItem(
+
+                        'Sungai',
+
+                        '#329DD9',
+
+                        'line',
+
+                        2
+
+                    );
+
+                }
+
+
+                // LEGENDA ADMINISTRASI BOROBUDUR
+
+                else if (id === 'adm_borobudur') {
+
+                    legendItem(
+
+                        'Batas administrasi',
+
+                        '#555555',
+
+                        'line',
+
+                        2,
+
+                        true
+
+                    );
+
+                }
+
+
+                // LEGENDA ADMINISTRASI WANUREJO
+
+                else if (id === 'adm_wanurejo') {
+
+                    legendItem(
+
+                        'Batas Desa Wanurejo',
+
+                        '#793AB0',
+
+                        'line',
+
+                        3
+
+                    );
+
+                }
+
+            }
+
+        }
+
+
+        // ==========================================
+        // 11. ZOOM OTOMATIS KE WANUREJO
+        // ==========================================
+
+        function home() {
+
+            const b = loaded.adm_wanurejo?.getBounds();
+
+
+            if (b?.isValid()) {
+
+                map.fitBounds(b, {
+
+                    padding: [25, 25]
+
+                });
+
+            } else {
+
+                map.setView(
+
+                    [-7.61, 110.22],
+
+                    14
+
+                );
+
+            }
+
+        }
+
+
+        document.getElementById('home').onclick = home;
+
+
+        // ==========================================
+        // 12. ATRIBUT POPUP
+        // ==========================================
+
+        const fields = {
+
+            NAMOBJ: 'Nama objek',
+
+            WADMKC: 'Kecamatan',
+
+            WADMKD: 'Desa',
+
+            KODE_ZON: 'Kode zona',
+
+            NAMA_ZON: 'Nama zona',
+
+            KODE_SUBZ: 'Kode subzona',
+
+            NAMA_SUBZ: 'Nama subzona',
+
+            ZNT: 'Zona nilai tanah',
+
+            LUAS_HA: 'Luas (ha)',
+
+            FUNGSI: 'Fungsi',
+
+            REMARK: 'Keterangan'
+
+        };
+
+
+        // ==========================================
+        // 13. PENGATURAN LAYER AKTIF
+        // ==========================================
+
+        function setLayerActive(id, visible) {
+
+            const layer = loaded[id];
+
+            if (!layer) return;
+
+
+            active[id] = visible;
+
+
+            if (checks[id]) {
+
+                checks[id].checked = visible;
+
+            }
+
+
+            if (visible) {
+
+                if (!map.hasLayer(layer)) {
+
+                    layer.addTo(map);
+
+                }
+
+            } else {
+
+                if (map.hasLayer(layer)) {
+
+                    map.removeLayer(layer);
+
+                }
+
+            }
+
+        }
+
+
+        // ==========================================
+        // 14. MEMUAT DATA GEOJSON
+        // ==========================================
+
+        async function load(def) {
+
+            const [
+
+                id,
+
+                name,
+
+                visible,
+
+                order,
+
+                style
+
+            ] = def;
+
+
+            // MEMBUAT PANE LAYER
+
+            const pane = map.createPane(id);
+
+            pane.style.zIndex = 400 + order;
+
+
+            // MEMBUAT CHECKBOX
+
+            const label = document.createElement('label');
+
+            const check = document.createElement('input');
+
+            check.type = 'checkbox';
+
+            check.checked = visible;
+
+            check.disabled = true;
+
+
+            checks[id] = check;
+
+
+            label.append(
+
+                check,
+
+                document.createTextNode(name)
+
+            );
+
+
+            document.getElementById('layers').append(label);
+
+
+            try {
+
+
+                // MEMBACA FILE GEOJSON
+
+                const r = await fetch(
+
+                    './data/' + id + '.geojson'
+
+                );
+
+
+                if (!r.ok) {
+
+                    throw new Error(
+
+                        'HTTP ' + r.status
+
+                    );
+
+                }
+
+
+                const data = await r.json();
+
+
+                if (
+
+                    data.type !== 'FeatureCollection' ||
+
+                    !Array.isArray(data.features)
+
+                ) {
+
+                    throw new Error(
+
+                        'Format GeoJSON tidak valid'
+
+                    );
+
+                }
+
+
+                // MEMBACA NAMA ZONA DARI DATA ASLI
+
+                if (id === 'pola_ruang') {
+
+                    data.features.forEach(f => {
+
+                        const p = f.properties || {};
+
+                        const code = String(
+
+                            p.KODE_ZON || ''
+
+                        ).trim().toUpperCase();
+
+
+                        if (zones[code] && p.NAMA_ZON) {
+
+                            zoneNames[code] = p.NAMA_ZON;
+
+                        }
+
+
+                        if (!zones[code]) {
+
+                            unknownZone = true;
+
+                        }
+
+                    });
+
+                }
+
+
+                // MEMERIKSA KELAS ZNT
+
+                if (id === 'znt_wanurejo') {
+
+                    unknownZNT = data.features.some(
+
+                        f => !Object.prototype.hasOwnProperty.call(
+
+                            znt,
+
+                            normalizeZNT(f.properties?.ZNT)
+
+                        )
+
+                    );
+
+                }
+
+
+                // MEMBUAT LAYER LEAFLET
+
+                const layer = L.geoJSON(data, {
+
+                    pane: id,
+
+
+                    style: f => style(
+
+                        f.properties || {}
+
+                    ),
+
+
+                    pointToLayer: (f, ll) =>
+
+                        L.circleMarker(ll, {
+
+                            pane: id,
+
+                            radius: 4,
+
+                            ...style(f.properties || {})
+
+                        }),
+
+
+                    // POPUP INFORMASI
+
+                    onEachFeature: (f, l) => {
+
+                        const div = document.createElement('div');
+
+                        const title = document.createElement('div');
+
+                        title.className = 'popup-title';
+
+                        title.textContent = name;
+
+                        div.append(title);
+
+
+                        let hasAttribute = false;
+
+
+                        for (const [key, fieldName]
+
+                            of Object.entries(fields)) {
+
+
+                            const val = f.properties?.[key];
+
+
+                            if (
+
+                                val === null ||
+
+                                val === undefined ||
+
+                                val === ''
+
+                            ) continue;
+
+
+                            const row = document.createElement('div');
+
+                            row.className = 'popup-row';
+
+
+                            const caption = document.createElement('span');
+
+                            caption.className = 'popup-label';
+
+                            caption.textContent = fieldName + ': ';
+
+
+                            let displayValue = String(val);
+
+
+                            if (key === 'ZNT') {
+
+                                displayValue = formatZNT(
+
+                                    normalizeZNT(val)
+
+                                );
+
+                            }
+
+
+                            row.append(
+
+                                caption,
+
+                                document.createTextNode(displayValue)
+
+                            );
+
+
+                            div.append(row);
+
+                            hasAttribute = true;
+
+                        }
+
+
+                        if (!hasAttribute) {
+
+                            const row = document.createElement('div');
+
+                            row.textContent =
+
+                                'Informasi atribut tidak tersedia.';
+
+                            div.append(row);
+
+                        }
+
+
+                        l.bindPopup(div);
+
+                    }
+
+                });
+
+
+                // MENYIMPAN LAYER
+
+                loaded[id] = layer;
+
+                active[id] = false;
+
+
+                setLayerActive(id, visible);
+
+
+                check.disabled = false;
+
+
+                // CHECKBOX LAYER
+
+                check.onchange = () => {
+
+
+                    // POLA RUANG DAN ZNT
+                    // DITAMPILKAN BERGANTIAN
+
+                    if (check.checked) {
+
+                        if (id === 'pola_ruang') {
+
+                            setLayerActive(
+
+                                'znt_wanurejo',
+
+                                false
+
+                            );
+
+                        }
+
+
+                        if (id === 'znt_wanurejo') {
+
+                            setLayerActive(
+
+                                'pola_ruang',
+
+                                false
+
+                            );
+
+                        }
+
+                    }
+
+
+                    setLayerActive(
+
+                        id,
+
+                        check.checked
+
+                    );
+
+
+                    updateLegend();
+
+                };
+
+
+                // MENGHITUNG LAYER BERHASIL
+
+                count++;
+
+
+                if (id === 'adm_wanurejo') {
+
+                    home();
+
+                }
+
+
+            } catch (e) {
+
+
+                errors.push(
+
+                    name + ': ' + e.message
+
+                );
+
+
+                check.checked = false;
+
+                active[id] = false;
+
+
+                const errorText = document.createElement('span');
+
+                errorText.className = 'layer-error';
+
+                errorText.textContent = '(gagal)';
+
+                label.append(errorText);
+
+
+                console.error(
+
+                    'Gagal memuat layer:',
+
+                    id,
+
+                    e
+
+                );
+
+
+            } finally {
+
+
+                finished++;
+
+
+                status.textContent =
+
+                    count + '/7 layer berhasil dimuat' +
+
+                    (
+
+                        finished < defs.length
+
+                            ? '\nSedang memuat data...'
+
+                            : ''
+
+                    ) +
+
+                    (
+
+                        errors.length
+
+                            ? '\n' + errors.join('\n')
+
+                            : ''
+
+                    );
+
+
+                updateLegend();
+
+            }
+
+        }
+
+
+        // ==========================================
+        // 15. MENJALANKAN SELURUH LAYER
+        // ==========================================
+
+        Promise.all(defs.map(load)).then(() => {
+
+            map.invalidateSize();
+
+        });
+
+    </script>
+
+</body>
+
+</html>
