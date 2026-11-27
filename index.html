@@ -4,48 +4,54 @@
 <head>
 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>SIP Wanurejo | Kelompok 4</title>
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <meta name="description"
+        content="Sistem Informasi Pertanahan Desa Wanurejo,
+        Kecamatan Borobudur, Kabupaten Magelang.">
 
-    <link rel="preconnect"
-        href="https://fonts.gstatic.com" crossorigin>
+    <title>SIP Wanurejo | Sistem Informasi Pertanahan</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet">
+    <!-- LIBRARY ICON -->
 
-    <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
     <style>
 
-        /* =====================================
+        /* =========================================
            1. PENGATURAN DASAR
-        ===================================== */
+        ========================================= */
 
         :root {
-            --navy: #102b49;
-            --blue: #245d8b;
-            --soft-blue: #e4eff9;
-            --background: #f0f5fa;
+
+            --primary: #17483e;
+            --dark: #10382e;
+            --secondary: #247c65;
+            --accent: #c4dfae;
+            --background: #f5f8f5;
             --white: #ffffff;
-            --text: #203b55;
-            --muted: #718398;
+            --text: #243b35;
+            --muted: #65776e;
+            --border: #dce7df;
+
         }
 
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
 
         html {
             scroll-behavior: smooth;
+            scroll-padding-top: 90px;
         }
 
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
             background: var(--background);
             color: var(--text);
             line-height: 1.7;
@@ -57,660 +63,998 @@
         }
 
         button {
-            font: inherit;
+            font-family: inherit;
             cursor: pointer;
         }
 
         .container {
             width: 90%;
-            max-width: 1250px;
+            max-width: 1200px;
             margin: auto;
         }
 
 
-        /* =====================================
-           2. NAVBAR
-        ===================================== */
+        /* =========================================
+           2. NAVIGATION BAR
+        ========================================= */
 
-        header {
-            background: var(--navy);
+        .navbar {
+
+            background: var(--dark);
             color: white;
             position: sticky;
             top: 0;
             z-index: 1000;
-            box-shadow: 0 3px 20px #102b4920;
+            box-shadow: 0 3px 15px #0002;
+
         }
 
-        .navbar {
+        .nav-container {
+
             min-height: 80px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 25px;
+
         }
 
         .brand {
+
             display: flex;
             align-items: center;
-            gap: 13px;
+            gap: 12px;
+
         }
 
         .brand-icon {
-            width: 47px;
-            height: 47px;
-            background: #ffffff15;
-            border: 1px solid #ffffff30;
-            border-radius: 13px;
-            display: grid;
-            place-items: center;
-        }
 
-        .brand-icon svg {
-            width: 27px;
-            height: 27px;
-            color: #b6d9f6;
-        }
-
-        .brand h2 {
-            font-size: 18px;
-            font-weight: 800;
-            letter-spacing: 1px;
-        }
-
-        .brand p {
-            font-size: 10px;
-            color: #b6d9f6;
-        }
-
-        nav {
+            width: 46px;
+            height: 46px;
+            background: var(--accent);
+            color: var(--primary);
+            border-radius: 12px;
             display: flex;
             align-items: center;
-            gap: 27px;
+            justify-content: center;
+            font-size: 22px;
+
         }
 
-        nav a {
-            font-size: 13px;
-            font-weight: 600;
-            color: #d6e5f2;
-            transition: .2s;
+        .brand-text h2 {
+
+            font-size: 19px;
+            line-height: 1.4;
+            letter-spacing: 0.8px;
+
         }
 
-        nav a:hover {
-            color: white;
+        .brand-text p {
+
+            font-size: 11px;
+            color: #c4dcd0;
+
         }
 
-        .login-button {
+        .nav-links {
+
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            list-style: none;
+
+        }
+
+        .nav-links a {
+
+            font-size: 14px;
+            font-weight: 500;
+            transition: 0.2s;
+
+        }
+
+        .nav-links a:hover {
+
+            color: var(--accent);
+
+        }
+
+        .nav-login {
+
+            background: var(--accent);
+            color: var(--dark);
             padding: 10px 20px;
-            border: 1px solid #ffffff50;
-            border-radius: 9px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            border-radius: 8px;
+            font-weight: 600;
+
         }
 
-        .login-button svg {
-            width: 16px;
+        .nav-links .nav-login:hover {
+
+            background: white;
+            color: var(--dark);
+
         }
 
-        .menu-button {
+        .menu-toggle {
+
             display: none;
-            color: white;
+            background: none;
             border: none;
-            background: transparent;
+            color: white;
+            font-size: 25px;
+
         }
 
 
-        /* =====================================
+        /* =========================================
            3. HERO SECTION
-        ===================================== */
+        ========================================= */
 
         .hero {
+
             position: relative;
             overflow: hidden;
-            background: linear-gradient(
-                125deg,
-                #102b49,
-                #245d8b
-            );
+            min-height: 510px;
+            padding: 100px 20px;
+            background:
+
+                radial-gradient(
+                    ellipse at top right,
+                    #ffffff13,
+                    transparent 55%
+                ),
+
+                linear-gradient(
+                    125deg,
+                    #10382e,
+                    #17483e,
+                    #32765c
+                );
+
             color: white;
-            padding: 95px 0 115px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+
         }
 
-        .batik {
+        .hero::before {
+
+            content: "";
             position: absolute;
             inset: 0;
-            width: 100%;
-            height: 100%;
-            opacity: .13;
+
+            background-image:
+
+                repeating-radial-gradient(
+                    ellipse at 90% 10%,
+                    transparent 0px,
+                    transparent 28px,
+                    #ffffff09 29px,
+                    #ffffff09 30px
+                );
+
             pointer-events: none;
+
         }
 
         .hero-content {
+
             position: relative;
-            z-index: 2;
-            max-width: 850px;
+            z-index: 1;
+            max-width: 900px;
+
         }
 
         .hero-label {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: #ffffff12;
-            border: 1px solid #ffffff30;
-            border-radius: 30px;
-            padding: 8px 16px;
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 1.5px;
-            margin-bottom: 25px;
-        }
 
-        .hero-label svg {
-            width: 15px;
+            display: inline-block;
+            padding: 8px 18px;
+            border: 1px solid #ffffff35;
+            background: #ffffff0d;
+            border-radius: 30px;
+            font-size: 12px;
+            letter-spacing: 2px;
+            margin-bottom: 24px;
+            color: #d6ebc9;
+
         }
 
         .hero h1 {
-            font-size: clamp(34px, 5vw, 60px);
+
+            font-size: clamp(35px, 5vw, 65px);
             line-height: 1.2;
-            font-weight: 800;
-            letter-spacing: -1.5px;
-            margin-bottom: 22px;
+            font-weight: 750;
+            margin-bottom: 20px;
+
         }
 
         .hero h1 span {
-            color: #b6d9f6;
+
+            display: block;
+            color: var(--accent);
+
+        }
+
+        .hero-location {
+
+            font-size: 17px;
+            color: #e2eee5;
+            margin-bottom: 15px;
+
         }
 
         .hero-description {
-            max-width: 690px;
-            font-size: 16px;
-            color: #d6e5f2;
-            line-height: 1.9;
-        }
 
-        .location {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
-            color: #c1d9ed;
-            margin-top: 20px;
-        }
+            font-size: 15px;
+            color: #c9ded1;
+            max-width: 700px;
+            margin: 0 auto 32px;
 
-        .location svg {
-            width: 18px;
         }
 
         .hero-buttons {
+
             display: flex;
+            justify-content: center;
             flex-wrap: wrap;
-            gap: 14px;
-            margin-top: 32px;
+            gap: 15px;
+
         }
 
         .btn {
+
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
             padding: 13px 23px;
-            border-radius: 10px;
+            border-radius: 8px;
             font-size: 14px;
-            font-weight: 700;
-            transition: .25s;
-        }
+            font-weight: 600;
+            transition: 0.25s;
 
-        .btn svg {
-            width: 19px;
         }
 
         .btn-primary {
-            background: #d4e9fa;
-            color: var(--navy);
+
+            background: var(--accent);
+            color: var(--dark);
+
         }
 
         .btn-primary:hover {
+
             background: white;
             transform: translateY(-3px);
+
         }
 
-        .btn-secondary {
-            border: 1px solid #ffffff60;
-            background: #ffffff10;
+        .btn-outline {
+
             color: white;
-            backdrop-filter: blur(8px);
+            border: 1px solid #ffffff70;
+
         }
 
-        .btn-secondary:hover {
-            background: #ffffff25;
+        .btn-outline:hover {
+
+            background: #ffffff18;
+            transform: translateY(-3px);
+
         }
 
 
-        /* =====================================
-           4. STATISTIK DASHBOARD
-        ===================================== */
+        /* =========================================
+           4. INFORMASI RINGKAS
+        ========================================= */
 
-        .statistics {
+        .summary {
+
             position: relative;
-            z-index: 3;
-            margin-top: -45px;
+            margin-top: -32px;
+            z-index: 2;
+
         }
 
-        .stat-grid {
+        .summary-grid {
+
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 18px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            box-shadow: 0 8px 30px #17483e12;
+            overflow: hidden;
+
         }
 
-        .stat-card {
-            background: #ffffffed;
-            backdrop-filter: blur(12px);
-            border: 1px solid white;
-            border-radius: 16px;
-            padding: 25px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            box-shadow: 0 8px 30px #102b490b;
-            transition: .25s;
+        .summary-item {
+
+            padding: 25px 15px;
+            text-align: center;
+            border-right: 1px solid var(--border);
+
         }
 
-        .stat-card:hover {
-            transform: translateY(-4px);
+        .summary-item:last-child {
+
+            border-right: none;
+
         }
 
-        .stat-icon {
-            width: 48px;
-            height: 48px;
-            flex-shrink: 0;
-            background: var(--soft-blue);
-            color: var(--blue);
-            border-radius: 12px;
-            display: grid;
-            place-items: center;
+        .summary-item i {
+
+            font-size: 23px;
+            color: var(--secondary);
+            margin-bottom: 8px;
+
         }
 
-        .stat-icon svg {
-            width: 23px;
+        .summary-item h3 {
+
+            color: var(--primary);
+            font-size: 25px;
+
         }
 
-        .stat-card h3 {
-            font-size: 27px;
-            font-weight: 800;
-            color: var(--navy);
-            line-height: 1.3;
-        }
+        .summary-item p {
 
-        .stat-card p {
-            font-size: 11px;
+            font-size: 13px;
             color: var(--muted);
-            margin-top: 4px;
+
         }
 
 
-        /* =====================================
-           5. JUDUL SECTION
-        ===================================== */
+        /* =========================================
+           5. PENGATURAN SECTION
+        ========================================= */
 
-        section {
-            scroll-margin-top: 100px;
+        section.content-section {
+
+            padding: 80px 0;
+
         }
 
         .section-heading {
+
             text-align: center;
-            margin-bottom: 35px;
+            max-width: 750px;
+            margin: 0 auto 40px;
+
         }
 
         .section-label {
-            font-size: 11px;
-            letter-spacing: 2px;
+
+            display: inline-block;
+            font-size: 12px;
             font-weight: 700;
-            color: var(--blue);
-            margin-bottom: 8px;
+            color: var(--secondary);
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+
         }
 
         .section-heading h2 {
+
             font-size: clamp(25px, 4vw, 35px);
-            font-weight: 800;
-            color: var(--navy);
-            margin-bottom: 10px;
+            color: var(--primary);
+            line-height: 1.4;
+            margin-bottom: 12px;
+
         }
 
         .section-heading p {
-            font-size: 14px;
+
             color: var(--muted);
-            max-width: 650px;
-            margin: auto;
+            font-size: 15px;
+
         }
 
 
-        /* =====================================
-           6. LAYANAN INFORMASI PERTANAHAN
-        ===================================== */
-
-        .services {
-            padding: 75px 0;
-        }
+        /* =========================================
+           6. LAYANAN UTAMA
+        ========================================= */
 
         .service-grid {
+
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 22px;
+            gap: 24px;
+
         }
 
         .service-card {
+
             display: flex;
             flex-direction: column;
             background: white;
-            border: 1px solid #dce7f0;
-            border-radius: 17px;
-            padding: 27px;
-            min-height: 240px;
-            box-shadow: 0 5px 20px #102b4905;
-            transition: .25s;
+            padding: 30px;
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            transition: 0.25s;
+
         }
 
         .service-card:hover {
+
             transform: translateY(-6px);
-            border-color: #9bbdd8;
-            box-shadow: 0 12px 30px #102b4910;
+            border-color: var(--secondary);
+            box-shadow: 0 12px 30px #17483e10;
+
         }
 
         .service-icon {
-            display: grid;
-            place-items: center;
-            width: 52px;
-            height: 52px;
-            background: var(--soft-blue);
-            color: var(--blue);
-            border-radius: 13px;
-            margin-bottom: 18px;
-        }
 
-        .service-icon svg {
-            width: 26px;
-            height: 26px;
+            width: 60px;
+            height: 60px;
+            border-radius: 14px;
+            background: #e6f1e7;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            margin-bottom: 22px;
+
         }
 
         .service-card h3 {
-            font-size: 18px;
-            color: var(--navy);
-            margin-bottom: 9px;
+
+            font-size: 21px;
+            color: var(--primary);
+            margin-bottom: 12px;
+
         }
 
         .service-card p {
-            font-size: 13px;
+
             color: var(--muted);
+            font-size: 14px;
             margin-bottom: 22px;
+
+        }
+
+        .service-features {
+
+            list-style: none;
+            margin-bottom: 25px;
+
+        }
+
+        .service-features li {
+
+            font-size: 13px;
+            padding: 6px 0;
+
+        }
+
+        .service-features i {
+
+            color: var(--secondary);
+            margin-right: 8px;
+
         }
 
         .service-link {
+
             display: flex;
             align-items: center;
-            gap: 8px;
-            color: var(--blue);
-            font-size: 13px;
-            font-weight: 700;
+            justify-content: space-between;
+            background: var(--primary);
+            color: white;
+            border-radius: 8px;
+            padding: 12px 17px;
+            font-size: 14px;
+            font-weight: 600;
             margin-top: auto;
+
         }
 
-        .service-link svg {
-            width: 17px;
+        .service-link:hover {
+
+            background: var(--secondary);
+
+        }
+
+        .register-link {
+
+            color: var(--secondary);
+            font-size: 13px;
+            text-align: center;
+            margin-top: 12px;
+
         }
 
 
-        /* =====================================
-           7. DAFTAR DATA SPASIAL
-        ===================================== */
+        /* =========================================
+           7. TENTANG SIP WANUREJO
+        ========================================= */
 
-        .data-section {
-            background: #e5eef7;
-            padding: 65px 0;
+        .about-section {
+
+            background: #eaf2eb;
+
         }
+
+        .about-grid {
+
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+
+        }
+
+        .about-content h2 {
+
+            font-size: 34px;
+            line-height: 1.3;
+            color: var(--primary);
+            margin-bottom: 20px;
+
+        }
+
+        .about-content p {
+
+            font-size: 15px;
+            color: var(--muted);
+            margin-bottom: 15px;
+            text-align: justify;
+
+        }
+
+        .about-visual {
+
+            background: linear-gradient(
+                135deg,
+                #17483e,
+                #32765c
+            );
+
+            border-radius: 20px;
+            padding: 40px;
+            color: white;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+
+        }
+
+        .about-visual i {
+
+            font-size: 75px;
+            color: var(--accent);
+            margin-bottom: 25px;
+
+        }
+
+        .about-visual h3 {
+
+            font-size: 25px;
+            margin-bottom: 8px;
+
+        }
+
+        .about-visual p {
+
+            color: #d5e7d8;
+            font-size: 14px;
+
+        }
+
+
+        /* =========================================
+           8. DATA SPASIAL
+        ========================================= */
 
         .data-grid {
+
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 13px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+
         }
 
-        .data-item {
-            background: #ffffffc9;
-            border: 1px solid white;
+        .data-card {
+
+            background: white;
+            border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 17px 20px;
+            padding: 22px;
+            transition: 0.2s;
+
+        }
+
+        .data-card:hover {
+
+            border-color: var(--secondary);
+            transform: translateY(-3px);
+
+        }
+
+        .data-icon {
+
+            width: 42px;
+            height: 42px;
             display: flex;
             align-items: center;
-            gap: 13px;
-            transition: .2s;
-        }
-
-        .data-item:hover {
-            background: white;
-        }
-
-        .data-item > svg {
-            color: var(--blue);
-            width: 22px;
-            flex-shrink: 0;
-        }
-
-        .data-item h4 {
-            font-size: 13px;
-            color: var(--navy);
-        }
-
-        .data-item p {
-            font-size: 11px;
-            color: var(--muted);
-        }
-
-        .data-format {
-            margin-left: auto;
-            color: var(--blue);
-            font-size: 10px;
-            font-weight: 700;
-            background: var(--soft-blue);
-            padding: 4px 9px;
-            border-radius: 5px;
-        }
-
-
-        /* =====================================
-           8. TENTANG WEBSITE
-        ===================================== */
-
-        .about {
-            padding: 75px 0;
-        }
-
-        .about-card {
-            display: grid;
-            grid-template-columns: 1.4fr 1fr;
-            align-items: center;
-            gap: 40px;
-            padding: 40px;
-            border: 1px solid #dce7f0;
-            background: white;
-            border-radius: 20px;
-        }
-
-        .about-card h2 {
-            font-size: 29px;
-            color: var(--navy);
-            margin-bottom: 16px;
-        }
-
-        .about-card p {
-            font-size: 14px;
-            color: var(--muted);
-            line-height: 1.9;
-            margin-bottom: 12px;
-        }
-
-        .about-identity {
-            background: linear-gradient(
-                130deg,
-                #102b49,
-                #245d8b
-            );
-            color: white;
-            padding: 35px;
-            border-radius: 16px;
-        }
-
-        .about-identity > svg {
-            width: 40px;
-            height: 40px;
-            color: #b6d9f6;
+            justify-content: center;
+            background: #e7f1e8;
+            color: var(--secondary);
+            border-radius: 10px;
+            font-size: 19px;
             margin-bottom: 15px;
+
         }
 
-        .about-identity h3 {
-            font-size: 23px;
+        .data-card h3 {
+
+            font-size: 16px;
+            color: var(--primary);
             margin-bottom: 8px;
+
         }
 
-        .about-identity p {
-            color: #c1d9ed;
+        .data-card p {
+
             font-size: 13px;
-            margin: 0;
+            color: var(--muted);
+
+        }
+
+        .data-link {
+
+            text-align: center;
+            margin-top: 30px;
+
+        }
+
+        .btn-green {
+
+            background: var(--primary);
+            color: white;
+
+        }
+
+        .btn-green:hover {
+
+            background: var(--secondary);
+
         }
 
 
-        /* =====================================
-           9. FOOTER
-        ===================================== */
+        /* =========================================
+           9. FITUR PENGOLAHAN SPASIAL
+        ========================================= */
+
+        .workspace-section {
+
+            background: #eaf2eb;
+
+        }
+
+        .feature-grid {
+
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+
+        }
+
+        .feature-card {
+
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 25px;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+
+        }
+
+        .feature-card i {
+
+            font-size: 23px;
+            color: var(--secondary);
+            margin-top: 4px;
+
+        }
+
+        .feature-card h3 {
+
+            color: var(--primary);
+            font-size: 16px;
+            margin-bottom: 7px;
+
+        }
+
+        .feature-card p {
+
+            color: var(--muted);
+            font-size: 13px;
+
+        }
+
+
+        /* =========================================
+           10. CALL TO ACTION
+        ========================================= */
+
+        .cta {
+
+            background: var(--primary);
+            color: white;
+            text-align: center;
+            padding: 65px 20px;
+
+        }
+
+        .cta h2 {
+
+            font-size: 30px;
+            margin-bottom: 12px;
+
+        }
+
+        .cta p {
+
+            color: #d1e4d6;
+            max-width: 650px;
+            margin: 0 auto 25px;
+            font-size: 15px;
+
+        }
+
+
+        /* =========================================
+           11. FOOTER
+        ========================================= */
 
         footer {
-            background: var(--navy);
+
+            background: #0e3027;
             color: white;
-            padding: 40px 0 20px;
+            padding: 45px 0 20px;
+
         }
 
-        .footer-content {
-            display: flex;
-            justify-content: space-between;
-            gap: 30px;
-            flex-wrap: wrap;
-            padding-bottom: 30px;
+        .footer-grid {
+
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 35px;
+            margin-bottom: 35px;
+
         }
 
-        .footer-content h3 {
+        .footer-grid h3 {
+
             font-size: 17px;
-            margin-bottom: 12px;
+            margin-bottom: 15px;
+
         }
 
-        .footer-content p,
-        .footer-content a {
-            font-size: 12px;
-            color: #b6cde0;
+        .footer-grid p {
+
+            color: #b4cbbd;
+            font-size: 13px;
+
         }
 
         .footer-links {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
+
+            list-style: none;
+
         }
 
-        .copyright {
+        .footer-links li {
+
+            margin-bottom: 8px;
+
+        }
+
+        .footer-links a {
+
+            font-size: 13px;
+            color: #b4cbbd;
+
+        }
+
+        .footer-links a:hover {
+
+            color: white;
+
+        }
+
+        .footer-bottom {
+
             border-top: 1px solid #ffffff20;
             padding-top: 20px;
             text-align: center;
-            color: #9eb8cf;
-            font-size: 11px;
+            font-size: 12px;
+            color: #b4cbbd;
+
         }
 
 
-        /* =====================================
-           10. RESPONSIVE DESIGN
-        ===================================== */
+        /* =========================================
+           12. RESPONSIVE TABLET
+        ========================================= */
 
-        @media (max-width: 1000px) {
-
-            .stat-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
+        @media (max-width: 950px) {
 
             .service-grid {
+
                 grid-template-columns: repeat(2, 1fr);
+
             }
 
-            nav {
+            .data-grid {
+
+                grid-template-columns: repeat(2, 1fr);
+
+            }
+
+            .feature-grid {
+
+                grid-template-columns: repeat(2, 1fr);
+
+            }
+
+            .nav-links {
+
                 gap: 15px;
+
             }
 
         }
+
+
+        /* =========================================
+           13. RESPONSIVE SMARTPHONE
+        ========================================= */
 
         @media (max-width: 700px) {
 
-            .navbar {
-                min-height: 70px;
+            .nav-container {
+
+                min-height: 72px;
+
             }
 
-            .menu-button {
+            .brand-text h2 {
+
+                font-size: 16px;
+
+            }
+
+            .brand-text p {
+
+                font-size: 10px;
+
+            }
+
+            .menu-toggle {
+
                 display: block;
+
             }
 
-            nav {
+            .nav-links {
+
                 display: none;
                 position: absolute;
-                top: 70px;
+                top: 72px;
                 left: 0;
-                right: 0;
-                background: var(--navy);
-                padding: 25px;
+                width: 100%;
+                background: var(--dark);
+                padding: 20px;
                 flex-direction: column;
                 align-items: stretch;
+                gap: 5px;
+
             }
 
-            nav.open {
+            .nav-links.active {
+
                 display: flex;
+
+            }
+
+            .nav-links a {
+
+                display: block;
+                padding: 12px;
+
+            }
+
+            .nav-login {
+
+                text-align: center;
+
             }
 
             .hero {
-                padding: 65px 0 90px;
+
+                min-height: 460px;
+                padding: 65px 15px;
+
+            }
+
+            .hero h1 {
+
+                font-size: 36px;
+
+            }
+
+            .hero-location {
+
+                font-size: 14px;
+
             }
 
             .hero-description {
-                font-size: 14px;
+
+                font-size: 13px;
+
             }
 
-            .stat-card {
-                padding: 15px;
-                gap: 10px;
+            .summary-grid {
+
+                grid-template-columns: repeat(2, 1fr);
+
             }
 
-            .stat-card h3 {
-                font-size: 20px;
-            }
+            .summary-item {
 
-            .stat-icon {
-                width: 36px;
-                height: 36px;
-            }
+                border-bottom: 1px solid var(--border);
 
-            .stat-icon svg {
-                width: 19px;
             }
 
             .service-grid,
-            .data-grid,
-            .about-card {
+            .about-grid,
+            .feature-grid,
+            .footer-grid {
+
                 grid-template-columns: 1fr;
+
             }
 
-            .about-card {
-                padding: 25px;
+            .data-grid {
+
+                grid-template-columns: repeat(2, 1fr);
+
             }
 
-            .services,
-            .about {
-                padding: 50px 0;
+            .data-card {
+
+                padding: 15px;
+
             }
 
-            .brand h2 {
-                font-size: 15px;
+            .about-content h2 {
+
+                font-size: 27px;
+
+            }
+
+            section.content-section {
+
+                padding: 55px 0;
+
+            }
+
+            .hero-buttons .btn {
+
+                width: 100%;
+                max-width: 300px;
+
             }
 
         }
@@ -722,415 +1066,459 @@
 <body>
 
 
-    <!-- =====================================
-         NAVIGASI
-    ====================================== -->
+    <!-- =========================================
+         NAVIGATION BAR
+    ========================================== -->
 
-    <header>
+    <nav class="navbar">
 
-        <div class="container navbar">
+        <div class="container nav-container">
 
-            <a class="brand" href="index.html">
+            <a href="./index.html" class="brand">
 
                 <div class="brand-icon">
-                    <i data-lucide="map"></i>
+
+                    <i class="fa-solid fa-map-location-dot"></i>
+
                 </div>
 
-                <div>
+                <div class="brand-text">
+
                     <h2>SIP WANUREJO</h2>
+
                     <p>Sistem Informasi Pertanahan</p>
+
                 </div>
 
             </a>
 
-            <button class="menu-button"
-                id="menuButton"
-                aria-label="Buka menu"
-                aria-expanded="false">
+            <button class="menu-toggle"
+                id="menuToggle"
+                aria-label="Buka menu navigasi"
+                aria-expanded="false"
+                aria-controls="navLinks">
 
-                <i data-lucide="menu"></i>
+                <i class="fa-solid fa-bars"></i>
 
             </button>
 
-            <nav id="navigation">
+            <ul class="nav-links" id="navLinks">
 
-                <a href="index.html">Beranda</a>
+                <li>
 
-                <a href="peta.html">Peta Interaktif</a>
+                    <a href="./index.html">
+                        Beranda
+                    </a>
 
-                <a href="olah_spasial.html">Olah Spasial</a>
+                </li>
 
-                <a href="#data">Data Spasial</a>
+                <li>
 
-                <a href="#tentang">Tentang</a>
+                    <a href="#tentang">
+                        Tentang
+                    </a>
 
-                <a href="login.html" class="login-button">
+                </li>
 
-                    <i data-lucide="log-in"></i>
-                    Masuk
+                <li>
+
+                    <a href="./peta.html">
+                        Peta Interaktif
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a href="./olah_spasial.html">
+                        Olah Data Spasial
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a href="./login.html"
+                        class="nav-login">
+
+                        <i class="fa-solid fa-user"></i>
+
+                        Masuk
+
+                    </a>
+
+                </li>
+
+            </ul>
+
+        </div>
+
+    </nav>
+
+
+    <!-- =========================================
+         HERO SECTION
+    ========================================== -->
+
+    <header class="hero">
+
+        <div class="hero-content">
+
+            <div class="hero-label">
+
+                WEBGIS • KELOMPOK 4
+
+            </div>
+
+            <h1>
+
+                Sistem Informasi
+
+                <span>Pertanahan Wanurejo</span>
+
+            </h1>
+
+            <p class="hero-location">
+
+                <i class="fa-solid fa-location-dot"></i>
+
+                Desa Wanurejo, Kecamatan Borobudur,
+                Kabupaten Magelang
+
+            </p>
+
+            <p class="hero-description">
+
+                Platform informasi geospasial berbasis web
+                untuk mendukung penyajian, visualisasi,
+                dan pengolahan data pertanahan secara
+                interaktif, informatif, dan mudah diakses.
+
+            </p>
+
+            <div class="hero-buttons">
+
+                <a href="./peta.html"
+                    class="btn btn-primary">
+
+                    <i class="fa-solid fa-map"></i>
+
+                    Jelajahi Peta
 
                 </a>
 
-            </nav>
+                <a href="./olah_spasial.html"
+                    class="btn btn-outline">
+
+                    <i class="fa-solid fa-draw-polygon"></i>
+
+                    Olah Data Spasial
+
+                </a>
+
+            </div>
 
         </div>
 
     </header>
 
 
-    <!-- =====================================
-         HERO / HALAMAN PEMBUKA
-    ====================================== -->
+    <!-- =========================================
+         INFORMASI RINGKAS
+    ========================================== -->
 
-    <section class="hero">
-
-        <!-- MOTIF MEGA MENDUNG -->
-
-        <svg class="batik"
-            xmlns="http://www.w3.org/2000/svg">
-
-            <defs>
-
-                <pattern id="megaMendung"
-                    width="280"
-                    height="160"
-                    patternUnits="userSpaceOnUse">
-
-                    <g fill="none"
-                        stroke="#ffffff"
-                        stroke-width="1.5">
-
-                        <path d="M15 100 Q0 75 30 65 Q25 35 65 45 Q90 5 125 40 Q160 10 185 50 Q230 30 245 70 Q275 100 235 115 H45 Q20 115 15 100Z"/>
-
-                        <path d="M25 96 Q15 80 42 73 Q35 48 72 55 Q95 20 125 52 Q155 25 178 62 Q220 45 235 78 Q255 98 225 105 H50 Q30 105 25 96Z"/>
-
-                        <path d="M40 92 Q30 83 53 80 Q50 62 80 65 Q100 35 125 65 Q150 40 170 75 Q205 60 220 86 Q230 96 210 96 H60Z"/>
-
-                        <path d="M60 88 Q55 78 90 78 Q110 55 125 77 Q145 60 160 85 Q190 72 205 88Z"/>
-
-                    </g>
-
-                </pattern>
-
-            </defs>
-
-            <rect width="100%"
-                height="100%"
-                fill="url(#megaMendung)"/>
-
-        </svg>
-
+    <div class="summary">
 
         <div class="container">
 
-            <div class="hero-content">
+            <div class="summary-grid">
 
-                <div class="hero-label">
+                <div class="summary-item">
 
-                    <i data-lucide="globe"></i>
+                    <i class="fa-solid fa-layer-group"></i>
 
-                    E-GEOPORTAL PERTANAHAN — KELOMPOK 4
+                    <h3>7</h3>
 
-                </div>
-
-                <h1>
-
-                    Sistem Informasi Pertanahan
-
-                    <span>Desa Wanurejo</span>
-
-                </h1>
-
-                <p class="hero-description">
-
-                    Platform informasi geospasial yang
-                    menyajikan data pertanahan, bidang persil,
-                    zona nilai tanah, serta rencana pola ruang
-                    untuk mendukung pengelolaan pertanahan
-                    dan perencanaan wilayah yang terintegrasi.
-
-                </p>
-
-                <div class="location">
-
-                    <i data-lucide="map-pin"></i>
-
-                    Kecamatan Borobudur, Kabupaten Magelang,
-                    Jawa Tengah
+                    <p>Layer Data Spasial</p>
 
                 </div>
 
-                <div class="hero-buttons">
+                <div class="summary-item">
 
-                    <a href="peta.html"
-                        class="btn btn-primary">
+                    <i class="fa-solid fa-earth-asia"></i>
 
-                        <i data-lucide="map"></i>
+                    <h3>2</h3>
 
-                        Jelajahi Peta
+                    <p>Pilihan Peta Dasar</p>
 
-                        <i data-lucide="arrow-right"></i>
+                </div>
 
-                    </a>
+                <div class="summary-item">
 
-                    <a href="olah_spasial.html"
-                        class="btn btn-secondary">
+                    <i class="fa-solid fa-draw-polygon"></i>
 
-                        <i data-lucide="pentagon"></i>
+                    <h3>4</h3>
 
-                        Olah Data Spasial
+                    <p>Mode Digitasi</p>
 
-                    </a>
+                </div>
+
+                <div class="summary-item">
+
+                    <i class="fa-solid fa-file-export"></i>
+
+                    <h3>2</h3>
+
+                    <p>Format Ekspor Data</p>
 
                 </div>
 
             </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- =====================================
-         STATISTIK DASHBOARD
-    ====================================== -->
-
-    <div class="statistics">
-
-        <div class="container stat-grid">
-
-            <a href="#data" class="stat-card">
-
-                <div class="stat-icon">
-                    <i data-lucide="layers"></i>
-                </div>
-
-                <div>
-                    <h3>7</h3>
-                    <p>Layer Data Spasial</p>
-                </div>
-
-            </a>
-
-
-            <a href="peta.html" class="stat-card">
-
-                <div class="stat-icon">
-                    <i data-lucide="map-pin"></i>
-                </div>
-
-                <div>
-                    <h3>1</h3>
-                    <p>Desa Kajian</p>
-                </div>
-
-            </a>
-
-
-            <a href="peta.html" class="stat-card">
-
-                <div class="stat-icon">
-                    <i data-lucide="chart-no-axes-combined"></i>
-                </div>
-
-                <div>
-                    <h3>5</h3>
-                    <p>Kelas Nilai Tanah</p>
-                </div>
-
-            </a>
-
-
-            <a href="#tentang" class="stat-card">
-
-                <div class="stat-icon">
-                    <i data-lucide="globe"></i>
-                </div>
-
-                <div>
-                    <h3>WebGIS</h3>
-                    <p>Platform Geospasial</p>
-                </div>
-
-            </a>
 
         </div>
 
     </div>
 
 
-    <!-- =====================================
-         LAYANAN WEBSITE
-    ====================================== -->
+    <!-- =========================================
+         LAYANAN UTAMA
+    ========================================== -->
 
-    <section class="services" id="layanan">
+    <section class="content-section" id="layanan">
 
         <div class="container">
 
             <div class="section-heading">
 
-                <div class="section-label">
-                    LAYANAN INFORMASI
-                </div>
+                <span class="section-label">
 
-                <h2>Eksplorasi Data Pertanahan</h2>
+                    LAYANAN UTAMA
+
+                </span>
+
+                <h2>
+
+                    Jelajahi Sistem Informasi Pertanahan
+
+                </h2>
 
                 <p>
-                    Akses berbagai informasi pertanahan
-                    dan tata ruang melalui layanan
-                    geospasial yang tersedia.
+
+                    Akses informasi pertanahan dan manfaatkan
+                    berbagai fitur pengolahan data spasial
+                    melalui layanan yang tersedia.
+
                 </p>
 
             </div>
-
 
             <div class="service-grid">
 
 
                 <!-- PETA INTERAKTIF -->
 
-                <a href="peta.html" class="service-card">
+                <article class="service-card">
 
                     <div class="service-icon">
-                        <i data-lucide="map"></i>
+
+                        <i class="fa-solid fa-map"></i>
+
                     </div>
 
                     <h3>Peta Interaktif</h3>
 
                     <p>
-                        Eksplorasi berbagai layer informasi
-                        spasial Desa Wanurejo dalam satu
-                        tampilan peta interaktif.
+
+                        Menampilkan informasi spasial
+                        pertanahan dan tata ruang Desa
+                        Wanurejo melalui peta digital
+                        yang dapat diakses secara interaktif.
+
                     </p>
 
-                    <div class="service-link">
-                        Buka Peta
-                        <i data-lucide="arrow-right"></i>
-                    </div>
+                    <ul class="service-features">
 
-                </a>
+                        <li>
+
+                            <i class="fa-solid fa-check"></i>
+
+                            Visualisasi tujuh layer spasial
+
+                        </li>
+
+                        <li>
+
+                            <i class="fa-solid fa-check"></i>
+
+                            Legenda peta dinamis
+
+                        </li>
+
+                        <li>
+
+                            <i class="fa-solid fa-check"></i>
+
+                            Informasi atribut objek
+
+                        </li>
+
+                        <li>
+
+                            <i class="fa-solid fa-check"></i>
+
+                            Citra satelit dan OpenStreetMap
+
+                        </li>
+
+                    </ul>
+
+                    <a href="./peta.html"
+                        class="service-link">
+
+                        Buka Peta Interaktif
+
+                        <i class="fa-solid fa-arrow-right"></i>
+
+                    </a>
+
+                </article>
 
 
-                <!-- PERSIL TANAH -->
+                <!-- OLAH DATA SPASIAL -->
 
-                <a href="peta.html" class="service-card">
+                <article class="service-card">
 
                     <div class="service-icon">
-                        <i data-lucide="layout-grid"></i>
+
+                        <i class="fa-solid fa-draw-polygon"></i>
+
                     </div>
 
-                    <h3>Bidang Persil Tanah</h3>
+                    <h3>Olah Data Spasial</h3>
 
                     <p>
-                        Informasi persebaran dan batas
-                        bidang tanah sebagai bagian dari
-                        sistem informasi pertanahan.
+
+                        Workspace GIS untuk melakukan
+                        digitasi, pengelolaan geometri,
+                        pengukuran, serta ekspor data
+                        spasial secara mandiri.
+
                     </p>
 
-                    <div class="service-link">
-                        Lihat Persil
-                        <i data-lucide="arrow-right"></i>
-                    </div>
+                    <ul class="service-features">
 
-                </a>
+                        <li>
+
+                            <i class="fa-solid fa-check"></i>
+
+                            Digitasi titik, garis, dan poligon
+
+                        </li>
+
+                        <li>
+
+                            <i class="fa-solid fa-check"></i>
+
+                            Pengukuran luas dan panjang
+
+                        </li>
+
+                        <li>
+
+                            <i class="fa-solid fa-check"></i>
+
+                            Pengelolaan tabel atribut
+
+                        </li>
+
+                        <li>
+
+                            <i class="fa-solid fa-check"></i>
+
+                            Ekspor GeoJSON dan Shapefile
+
+                        </li>
+
+                    </ul>
+
+                    <a href="./olah_spasial.html"
+                        class="service-link">
+
+                        Buka Workspace GIS
+
+                        <i class="fa-solid fa-arrow-right"></i>
+
+                    </a>
+
+                </article>
 
 
-                <!-- ZONA NILAI TANAH -->
+                <!-- AKSES PENGGUNA -->
 
-                <a href="peta.html" class="service-card">
+                <article class="service-card">
 
                     <div class="service-icon">
-                        <i data-lucide="chart-no-axes-combined"></i>
+
+                        <i class="fa-solid fa-user-circle"></i>
+
                     </div>
 
-                    <h3>Zona Nilai Tanah</h3>
+                    <h3>Akses Pengguna</h3>
 
                     <p>
-                        Visualisasi persebaran nilai tanah
-                        berdasarkan lima kelas harga
-                        dengan gradasi warna hijau
-                        hingga merah.
+
+                        Layanan autentikasi pengguna
+                        untuk masuk atau mendaftarkan
+                        akun pada Sistem Informasi
+                        Pertanahan Wanurejo.
+
                     </p>
 
-                    <div class="service-link">
-                        Lihat ZNT
-                        <i data-lucide="arrow-right"></i>
-                    </div>
+                    <ul class="service-features">
 
-                </a>
+                        <li>
 
+                            <i class="fa-solid fa-check"></i>
 
-                <!-- POLA RUANG -->
+                            Login pengguna
 
-                <a href="peta.html" class="service-card">
+                        </li>
 
-                    <div class="service-icon">
-                        <i data-lucide="layers"></i>
-                    </div>
+                        <li>
 
-                    <h3>Rencana Pola Ruang</h3>
+                            <i class="fa-solid fa-check"></i>
 
-                    <p>
-                        Informasi pembagian zona ruang
-                        untuk mendukung pemahaman
-                        terhadap rencana pemanfaatan ruang.
-                    </p>
+                            Registrasi akun
 
-                    <div class="service-link">
-                        Lihat Pola Ruang
-                        <i data-lucide="arrow-right"></i>
-                    </div>
+                        </li>
 
-                </a>
+                        <li>
 
+                            <i class="fa-solid fa-check"></i>
 
-                <!-- JARINGAN JALAN -->
+                            Autentikasi berbasis Firebase
 
-                <a href="peta.html" class="service-card">
+                        </li>
 
-                    <div class="service-icon">
-                        <i data-lucide="route"></i>
-                    </div>
+                    </ul>
 
-                    <h3>Jaringan Jalan</h3>
+                    <a href="./login.html"
+                        class="service-link">
 
-                    <p>
-                        Informasi jaringan transportasi
-                        dan klasifikasi jalan untuk
-                        memahami konektivitas kawasan.
-                    </p>
+                        Masuk ke Sistem
 
-                    <div class="service-link">
-                        Lihat Jaringan Jalan
-                        <i data-lucide="arrow-right"></i>
-                    </div>
+                        <i class="fa-solid fa-arrow-right"></i>
 
-                </a>
+                    </a>
 
+                    <a href="./register.html"
+                        class="register-link">
 
-                <!-- OLAH SPASIAL -->
+                        Belum memiliki akun? Daftar di sini
 
-                <a href="olah_spasial.html"
-                    class="service-card">
+                    </a>
 
-                    <div class="service-icon">
-                        <i data-lucide="pentagon"></i>
-                    </div>
-
-                    <h3>Pengolahan Data Spasial</h3>
-
-                    <p>
-                        Halaman pengembangan fitur
-                        digitasi, pengukuran, dan
-                        pengelolaan data geografis.
-                    </p>
-
-                    <div class="service-link">
-                        Buka Olah Spasial
-                        <i data-lucide="arrow-right"></i>
-                    </div>
-
-                </a>
+                </article>
 
             </div>
 
@@ -1139,127 +1527,294 @@
     </section>
 
 
-    <!-- =====================================
-         DAFTAR DATA SPASIAL
-    ====================================== -->
+    <!-- =========================================
+         TENTANG SIP WANUREJO
+    ========================================== -->
 
-    <section class="data-section" id="data">
+    <section class="content-section about-section"
+        id="tentang">
+
+        <div class="container about-grid">
+
+            <div class="about-content">
+
+                <span class="section-label">
+
+                    TENTANG SISTEM
+
+                </span>
+
+                <h2>
+
+                    Sistem Informasi Pertanahan
+                    Desa Wanurejo
+
+                </h2>
+
+                <p>
+
+                    Sistem Informasi Pertanahan (SIP)
+                    Wanurejo merupakan platform WebGIS
+                    yang dikembangkan untuk menyajikan
+                    informasi pertanahan dan data spasial
+                    di Desa Wanurejo, Kecamatan Borobudur,
+                    Kabupaten Magelang.
+
+                </p>
+
+                <p>
+
+                    Sistem ini mengintegrasikan informasi
+                    batas administrasi, persil tanah,
+                    pola ruang, zona nilai tanah, jaringan
+                    jalan, dan sungai dalam satu platform
+                    berbasis peta digital.
+
+                </p>
+
+                <p>
+
+                    Pengembangan sistem ini bertujuan
+                    mendukung aksesibilitas informasi
+                    pertanahan serta menjadi media
+                    pembelajaran dalam pemanfaatan
+                    teknologi sistem informasi geografis
+                    untuk perencanaan wilayah dan kota.
+
+                </p>
+
+                <a href="./peta.html"
+                    class="btn btn-green">
+
+                    <i class="fa-solid fa-map"></i>
+
+                    Jelajahi Data Spasial
+
+                </a>
+
+            </div>
+
+            <div class="about-visual">
+
+                <i class="fa-solid fa-map-location-dot"></i>
+
+                <h3>Desa Wanurejo</h3>
+
+                <p>
+
+                    Kecamatan Borobudur
+
+                    <br>
+
+                    Kabupaten Magelang
+
+                    <br>
+
+                    Provinsi Jawa Tengah
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================
+         DATA SPASIAL
+    ========================================== -->
+
+    <section class="content-section" id="data">
 
         <div class="container">
 
             <div class="section-heading">
 
-                <div class="section-label">
-                    KATALOG DATA
-                </div>
+                <span class="section-label">
 
-                <h2>Data Spasial Tersedia</h2>
+                    INFORMASI GEOSPASIAL
+
+                </span>
+
+                <h2>Data Spasial yang Disajikan</h2>
 
                 <p>
-                    Tujuh layer data spasial yang
-                    digunakan dalam pengembangan
-                    WebGIS SIP Wanurejo.
+
+                    Tujuh layer informasi spasial yang
+                    diintegrasikan dalam peta interaktif
+                    SIP Wanurejo.
+
                 </p>
 
             </div>
 
-
             <div class="data-grid">
 
-                <a href="peta.html" class="data-item">
 
-                    <i data-lucide="map"></i>
+                <!-- ADMINISTRASI WANUREJO -->
 
-                    <div>
-                        <h4>Administrasi Borobudur</h4>
-                        <p>Batas administrasi kecamatan</p>
+                <article class="data-card">
+
+                    <div class="data-icon">
+
+                        <i class="fa-solid fa-map-location-dot"></i>
+
                     </div>
 
-                    <span class="data-format">GeoJSON</span>
+                    <h3>Administrasi Wanurejo</h3>
 
-                </a>
+                    <p>
+
+                        Informasi batas wilayah
+                        administrasi Desa Wanurejo.
+
+                    </p>
+
+                </article>
 
 
-                <a href="peta.html" class="data-item">
+                <!-- ADMINISTRASI BOROBUDUR -->
 
-                    <i data-lucide="map-pin"></i>
+                <article class="data-card">
 
-                    <div>
-                        <h4>Administrasi Wanurejo</h4>
-                        <p>Batas administrasi desa</p>
+                    <div class="data-icon">
+
+                        <i class="fa-solid fa-map"></i>
+
                     </div>
 
-                    <span class="data-format">GeoJSON</span>
+                    <h3>Administrasi Borobudur</h3>
 
-                </a>
+                    <p>
+
+                        Informasi batas administrasi
+                        Kecamatan Borobudur.
+
+                    </p>
+
+                </article>
 
 
-                <a href="peta.html" class="data-item">
+                <!-- PERSIL TANAH -->
 
-                    <i data-lucide="layout-grid"></i>
+                <article class="data-card">
 
-                    <div>
-                        <h4>Bidang Persil Tanah</h4>
-                        <p>Informasi bidang tanah</p>
+                    <div class="data-icon">
+
+                        <i class="fa-solid fa-border-all"></i>
+
                     </div>
 
-                    <span class="data-format">GeoJSON</span>
+                    <h3>Persil Tanah</h3>
 
-                </a>
+                    <p>
+
+                        Informasi spasial mengenai
+                        bidang-bidang tanah.
+
+                    </p>
+
+                </article>
 
 
-                <a href="peta.html" class="data-item">
+                <!-- POLA RUANG -->
 
-                    <i data-lucide="layers"></i>
+                <article class="data-card">
 
-                    <div>
-                        <h4>Rencana Pola Ruang</h4>
-                        <p>Informasi zonasi ruang</p>
+                    <div class="data-icon">
+
+                        <i class="fa-solid fa-layer-group"></i>
+
                     </div>
 
-                    <span class="data-format">GeoJSON</span>
+                    <h3>Pola Ruang</h3>
 
-                </a>
+                    <p>
+
+                        Informasi distribusi peruntukan
+                        ruang berdasarkan klasifikasi zona.
+
+                    </p>
+
+                </article>
 
 
-                <a href="peta.html" class="data-item">
+                <!-- ZONA NILAI TANAH -->
 
-                    <i data-lucide="route"></i>
+                <article class="data-card">
 
-                    <div>
-                        <h4>Jaringan Jalan</h4>
-                        <p>Informasi jaringan transportasi</p>
+                    <div class="data-icon">
+
+                        <i class="fa-solid fa-coins"></i>
+
                     </div>
 
-                    <span class="data-format">GeoJSON</span>
+                    <h3>Zona Nilai Tanah</h3>
 
-                </a>
+                    <p>
+
+                        Informasi klasifikasi nilai tanah
+                        berdasarkan zona dan rentang nilai.
+
+                    </p>
+
+                </article>
 
 
-                <a href="peta.html" class="data-item">
+                <!-- JARINGAN JALAN -->
 
-                    <i data-lucide="waves"></i>
+                <article class="data-card">
 
-                    <div>
-                        <h4>Jaringan Sungai</h4>
-                        <p>Informasi hidrografi</p>
+                    <div class="data-icon">
+
+                        <i class="fa-solid fa-road"></i>
+
                     </div>
 
-                    <span class="data-format">GeoJSON</span>
+                    <h3>Jaringan Jalan</h3>
 
-                </a>
+                    <p>
+
+                        Informasi jaringan jalan
+                        dan konektivitas wilayah.
+
+                    </p>
+
+                </article>
 
 
-                <a href="peta.html" class="data-item">
+                <!-- SUNGAI -->
 
-                    <i data-lucide="chart-no-axes-combined"></i>
+                <article class="data-card">
 
-                    <div>
-                        <h4>Zona Nilai Tanah</h4>
-                        <p>Lima klasifikasi nilai tanah</p>
+                    <div class="data-icon">
+
+                        <i class="fa-solid fa-water"></i>
+
                     </div>
 
-                    <span class="data-format">GeoJSON</span>
+                    <h3>Sungai</h3>
+
+                    <p>
+
+                        Informasi spasial mengenai
+                        jaringan sungai di wilayah kajian.
+
+                    </p>
+
+                </article>
+
+            </div>
+
+            <div class="data-link">
+
+                <a href="./peta.html"
+                    class="btn btn-green">
+
+                    <i class="fa-solid fa-layer-group"></i>
+
+                    Tampilkan Seluruh Layer Peta
 
                 </a>
 
@@ -1270,72 +1825,165 @@
     </section>
 
 
-    <!-- =====================================
-         TENTANG WEBSITE
-    ====================================== -->
+    <!-- =========================================
+         FITUR PENGOLAHAN DATA SPASIAL
+    ========================================== -->
 
-    <section class="about" id="tentang">
+    <section class="content-section workspace-section"
+        id="workspace">
 
         <div class="container">
 
-            <div class="about-card">
+            <div class="section-heading">
 
-                <div>
+                <span class="section-label">
 
-                    <div class="section-label">
-                        TENTANG PLATFORM
+                    WORKSPACE GIS
+
+                </span>
+
+                <h2>Pengolahan Data Spasial</h2>
+
+                <p>
+
+                    Lakukan digitasi dan pengolahan data
+                    geografis secara langsung melalui
+                    browser tanpa instalasi perangkat
+                    lunak GIS tambahan.
+
+                </p>
+
+            </div>
+
+            <div class="feature-grid">
+
+                <article class="feature-card">
+
+                    <i class="fa-solid fa-draw-polygon"></i>
+
+                    <div>
+
+                        <h3>Digitasi Objek</h3>
+
+                        <p>
+
+                            Membuat objek titik, garis,
+                            poligon, dan persegi
+                            secara interaktif.
+
+                        </p>
+
                     </div>
 
-                    <h2>
-                        Sistem Informasi Pertanahan Wanurejo
-                    </h2>
+                </article>
 
-                    <p>
+                <article class="feature-card">
 
-                        SIP Wanurejo merupakan platform
-                        berbasis WebGIS yang dikembangkan
-                        untuk menyajikan informasi pertanahan
-                        dan tata ruang secara digital,
-                        informatif, dan mudah diakses.
+                    <i class="fa-solid fa-pen-to-square"></i>
 
-                    </p>
+                    <div>
 
-                    <p>
+                        <h3>Edit Geometri</h3>
 
-                        Website ini dikembangkan sebagai
-                        bagian dari tugas mata kuliah
-                        Sistem Informasi Pertanahan
-                        melalui pemanfaatan teknologi
-                        sistem informasi geografis,
-                        basis data spasial, dan
-                        pengembangan website.
+                        <p>
 
-                    </p>
+                            Mengubah posisi dan bentuk
+                            objek hasil digitasi.
 
-                </div>
+                        </p>
 
+                    </div>
 
-                <div class="about-identity">
+                </article>
 
-                    <i data-lucide="graduation-cap"></i>
+                <article class="feature-card">
 
-                    <h3>Kelompok 4</h3>
+                    <i class="fa-solid fa-ruler-combined"></i>
 
-                    <p>
-                        Mata Kuliah Sistem Informasi Pertanahan
-                    </p>
+                    <div>
 
-                    <br>
+                        <h3>Pengukuran Spasial</h3>
 
-                    <p>
-                        Perencanaan Wilayah dan Kota
-                    </p>
+                        <p>
 
-                    <p>
-                        Universitas Diponegoro
-                    </p>
+                            Menghitung estimasi luas
+                            poligon dan panjang garis.
 
-                </div>
+                        </p>
+
+                    </div>
+
+                </article>
+
+                <article class="feature-card">
+
+                    <i class="fa-solid fa-table"></i>
+
+                    <div>
+
+                        <h3>Tabel Atribut</h3>
+
+                        <p>
+
+                            Menampilkan nama, kategori,
+                            geometri, dan hasil pengukuran.
+
+                        </p>
+
+                    </div>
+
+                </article>
+
+                <article class="feature-card">
+
+                    <i class="fa-solid fa-file-import"></i>
+
+                    <div>
+
+                        <h3>Import GeoJSON</h3>
+
+                        <p>
+
+                            Memasukkan data spasial
+                            berformat GeoJSON ke workspace.
+
+                        </p>
+
+                    </div>
+
+                </article>
+
+                <article class="feature-card">
+
+                    <i class="fa-solid fa-file-export"></i>
+
+                    <div>
+
+                        <h3>Ekspor Data</h3>
+
+                        <p>
+
+                            Mengunduh hasil digitasi dalam
+                            format GeoJSON dan Shapefile ZIP.
+
+                        </p>
+
+                    </div>
+
+                </article>
+
+            </div>
+
+            <div class="data-link">
+
+                <a href="./olah_spasial.html"
+                    class="btn btn-green">
+
+                    <i class="fa-solid fa-draw-polygon"></i>
+
+                    Mulai Pengolahan Data Spasial
+
+                </a>
 
             </div>
 
@@ -1344,52 +1992,141 @@
     </section>
 
 
-    <!-- =====================================
+    <!-- =========================================
+         CALL TO ACTION
+    ========================================== -->
+
+    <section class="cta">
+
+        <h2>
+
+            Jelajahi Informasi Pertanahan Wanurejo
+
+        </h2>
+
+        <p>
+
+            Manfaatkan teknologi informasi geospasial
+            untuk memahami karakteristik wilayah,
+            informasi pertanahan, dan peruntukan ruang.
+
+        </p>
+
+        <div class="hero-buttons">
+
+            <a href="./peta.html"
+                class="btn btn-primary">
+
+                <i class="fa-solid fa-map"></i>
+
+                Buka Peta Interaktif
+
+            </a>
+
+            <a href="./olah_spasial.html"
+                class="btn btn-outline">
+
+                <i class="fa-solid fa-draw-polygon"></i>
+
+                Buka Workspace GIS
+
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================
          FOOTER
-    ====================================== -->
+    ========================================== -->
 
     <footer>
 
         <div class="container">
 
-            <div class="footer-content">
+            <div class="footer-grid">
 
                 <div>
 
-                    <h3>SIP WANUREJO</h3>
+                    <h3>
 
-                    <p>Sistem Informasi Pertanahan</p>
+                        <i class="fa-solid fa-map-location-dot"></i>
+
+                        SIP WANUREJO
+
+                    </h3>
 
                     <p>
+
+                        Sistem Informasi Pertanahan
+                        berbasis WebGIS Desa Wanurejo,
                         Kecamatan Borobudur,
-                        Kabupaten Magelang
+                        Kabupaten Magelang.
+
                     </p>
 
-                    <p>Jawa Tengah, Indonesia</p>
+                    <br>
+
+                    <p>
+
+                        Dikembangkan sebagai media
+                        pembelajaran dan penyajian
+                        informasi geospasial.
+
+                    </p>
 
                 </div>
-
 
                 <div>
 
                     <h3>Navigasi</h3>
 
-                    <div class="footer-links">
+                    <ul class="footer-links">
 
-                        <a href="index.html">Beranda</a>
+                        <li>
 
-                        <a href="peta.html">Peta Interaktif</a>
+                            <a href="./index.html">
+                                Beranda
+                            </a>
 
-                        <a href="olah_spasial.html">
-                            Olah Spasial
-                        </a>
+                        </li>
 
-                        <a href="#data">Data Spasial</a>
+                        <li>
 
-                    </div>
+                            <a href="#tentang">
+                                Tentang Sistem
+                            </a>
+
+                        </li>
+
+                        <li>
+
+                            <a href="./peta.html">
+                                Peta Interaktif
+                            </a>
+
+                        </li>
+
+                        <li>
+
+                            <a href="./olah_spasial.html">
+                                Olah Data Spasial
+                            </a>
+
+                        </li>
+
+                        <li>
+
+                            <a href="./login.html">
+                                Login
+                            </a>
+
+                        </li>
+
+                    </ul>
 
                 </div>
-
 
                 <div>
 
@@ -1401,23 +2138,20 @@
 
                     <p>Universitas Diponegoro</p>
 
-                    <p>
-                        <a href="login.html">Masuk</a>
-                        |
-                        <a href="register.html">Daftar Akun</a>
-                    </p>
+                    <p>2026</p>
 
                 </div>
 
             </div>
 
-
-            <div class="copyright">
+            <div class="footer-bottom">
 
                 &copy; <span id="year">2026</span>
                 SIP Wanurejo — Kelompok 4.
 
-                Dikembangkan untuk kepentingan akademik.
+                <br>
+
+                Sistem Informasi Pertanahan
 
             </div>
 
@@ -1426,66 +2160,68 @@
     </footer>
 
 
-    <!-- =====================================
+    <!-- =========================================
          JAVASCRIPT
-    ====================================== -->
+    ========================================== -->
 
     <script>
 
-        // Mengaktifkan ikon
+        // MENU NAVIGASI SMARTPHONE
 
-        if (window.lucide) {
+        const menuToggle =
+            document.getElementById('menuToggle');
 
-            lucide.createIcons();
+        const navLinks =
+            document.getElementById('navLinks');
 
-        }
-
-
-        // Menu navigasi perangkat seluler
-
-        const menuButton =
-            document.getElementById('menuButton');
-
-        const navigation =
-            document.getElementById('navigation');
-
-
-        menuButton.addEventListener('click', () => {
+        menuToggle.addEventListener('click', () => {
 
             const opened =
-                navigation.classList.toggle('open');
+                navLinks.classList.toggle('active');
 
-            menuButton.setAttribute(
+            menuToggle.setAttribute(
                 'aria-expanded',
                 String(opened)
             );
 
+            menuToggle.innerHTML = opened
+
+                ? '<i class="fa-solid fa-xmark"></i>'
+
+                : '<i class="fa-solid fa-bars"></i>';
+
         });
 
 
-        // Menutup menu setelah tautan diklik
+        // MENUTUP MENU SETELAH LINK DIPILIH
 
-        navigation.querySelectorAll('a')
-            .forEach(link => {
+        document.querySelectorAll(
+            '.nav-links a'
+        ).forEach(link => {
 
-                link.addEventListener('click', () => {
+            link.addEventListener('click', () => {
 
-                    navigation.classList.remove('open');
+                navLinks.classList.remove('active');
 
-                    menuButton.setAttribute(
-                        'aria-expanded',
-                        'false'
-                    );
+                menuToggle.setAttribute(
+                    'aria-expanded',
+                    'false'
+                );
 
-                });
+                menuToggle.innerHTML =
+
+                    '<i class="fa-solid fa-bars"></i>';
 
             });
 
+        });
 
-        // Tahun otomatis pada footer
 
-        document.getElementById('year').textContent =
-            new Date().getFullYear();
+        // TAHUN FOOTER OTOMATIS
+
+        document.getElementById(
+            'year'
+        ).textContent = new Date().getFullYear();
 
     </script>
 

@@ -1,0 +1,2409 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Olah Data Spasial | SIP Wanurejo</title>
+
+    <!-- LEAFLET CSS -->
+
+    <link rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+    <!-- LEAFLET DRAW CSS -->
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css">
+
+    <style>
+
+        /* ======================================
+           1. PENGATURAN DASAR
+        ====================================== */
+
+        :root {
+            --primary: #17483e;
+            --secondary: #247c65;
+            --accent: #159e91;
+            --background: #f4f7f5;
+            --text: #243b35;
+            --border: #dce5df;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            font-size: 14px;
+        }
+
+        /* ======================================
+           2. HEADER
+        ====================================== */
+
+        header {
+            height: 76px;
+            background: var(--primary);
+            color: white;
+            padding: 14px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        header h1 {
+            margin: 0 0 5px;
+            font-size: 20px;
+        }
+
+        header p {
+            margin: 0;
+            font-size: 12px;
+            color: #cce4da;
+        }
+
+        .back-button {
+            background: white;
+            color: var(--primary);
+            padding: 11px 17px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        /* ======================================
+           3. LAYOUT UTAMA
+        ====================================== */
+
+        .workspace {
+            display: flex;
+            height: calc(100dvh - 76px);
+        }
+
+        .sidebar {
+            width: 340px;
+            flex-shrink: 0;
+            overflow-y: auto;
+            background: white;
+            padding: 18px;
+            border-right: 1px solid var(--border);
+        }
+
+        .sidebar h2 {
+            margin: 0 0 8px;
+            font-size: 21px;
+        }
+
+        .description {
+            font-size: 13px;
+            color: #687b72;
+            line-height: 1.6;
+        }
+
+        .map-container {
+            position: relative;
+            flex: 1;
+            min-width: 0;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+            background: #dce5df;
+        }
+
+        /* ======================================
+           4. PANEL SIDEBAR
+        ====================================== */
+
+        .panel {
+            margin-top: 18px;
+            padding: 15px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: #fff;
+        }
+
+        .panel h3 {
+            font-size: 15px;
+            margin: 0 0 15px;
+            color: var(--primary);
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 7px;
+            font-size: 13px;
+        }
+
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            background: #f8faf9;
+            color: var(--text);
+            font-size: 13px;
+        }
+
+        input[type="color"] {
+            width: 55px;
+            height: 38px;
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        input[type="radio"],
+        input[type="checkbox"] {
+            accent-color: var(--secondary);
+        }
+
+        input[type="file"] {
+            max-width: 100%;
+            font-size: 12px;
+        }
+
+        .color-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .hint {
+            color: #718178;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        /* ======================================
+           5. TOMBOL
+        ====================================== */
+
+        button {
+            width: 100%;
+            border: none;
+            border-radius: 8px;
+            padding: 11px;
+            margin: 4px 0;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            filter: brightness(0.92);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-accent {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-light {
+            background: #e7f1ec;
+            color: var(--primary);
+        }
+
+        .btn-danger {
+            background: #fbeaea;
+            color: #ad3030;
+        }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            margin-top: 12px;
+        }
+
+        /* ======================================
+           6. INFORMASI LAYER
+        ====================================== */
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 9px 0;
+            border-bottom: 1px solid #edf1ee;
+        }
+
+        .stat-row strong {
+            color: var(--secondary);
+        }
+
+        /* ======================================
+           7. INFORMASI PADA PETA
+        ====================================== */
+
+        .map-title {
+            position: absolute;
+            top: 12px;
+            left: 55px;
+            right: 15px;
+            max-width: 360px;
+            z-index: 500;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 12px 16px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px #0002;
+            pointer-events: none;
+        }
+
+        .map-title strong {
+            display: block;
+            font-size: 15px;
+            margin-bottom: 5px;
+        }
+
+        .map-title span {
+            font-size: 12px;
+            color: #718178;
+        }
+
+        .coordinates {
+            position: absolute;
+            bottom: 28px;
+            left: 12px;
+            z-index: 500;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 10px 13px;
+            border-radius: 8px;
+            font-size: 12px;
+            pointer-events: none;
+        }
+
+        .status-box {
+            background: #e8f3ee;
+            color: var(--primary);
+            padding: 12px;
+            border-radius: 8px;
+            line-height: 1.6;
+            font-size: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        /* ======================================
+           8. TABEL ATRIBUT
+        ====================================== */
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            width: 900px;
+            max-width: 100%;
+            max-height: 85vh;
+            overflow: auto;
+            border-radius: 12px;
+            padding: 22px;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .modal-header button {
+            width: auto;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            font-size: 13px;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            border: 1px solid var(--border);
+            text-align: left;
+        }
+
+        th {
+            background: var(--primary);
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background: #f3f7f5;
+        }
+
+        /* ======================================
+           9. RESPONSIVE
+        ====================================== */
+
+        @media (max-width: 700px) {
+
+            header h1 {
+                font-size: 15px;
+            }
+
+            header p {
+                font-size: 10px;
+            }
+
+            header {
+                padding: 12px;
+            }
+
+            .workspace {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: 40%;
+                border-right: none;
+            }
+
+            .map-container {
+                min-height: 0;
+            }
+
+            .map-title {
+                max-width: 250px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <!-- ======================================
+         HEADER
+    ======================================= -->
+
+    <header>
+
+        <div>
+
+            <h1>SIP | Pengolahan Data Spasial</h1>
+
+            <p>
+                Desa Wanurejo, Kecamatan Borobudur —
+                Kelompok 4
+            </p>
+
+        </div>
+
+        <a href="./index.html" class="back-button">
+            ← Beranda
+        </a>
+
+    </header>
+
+    <!-- ======================================
+         WORKSPACE GIS
+    ======================================= -->
+
+    <main class="workspace">
+
+        <aside class="sidebar">
+
+            <h2>Workspace GIS</h2>
+
+            <p class="description">
+
+                Digitasi titik, garis, dan poligon secara
+                interaktif. Atur atribut, lakukan pengukuran,
+                dan unduh hasil pengolahan data spasial.
+
+            </p>
+
+            <!-- PETA DASAR -->
+
+            <section class="panel">
+
+                <h3>🗺 Peta Dasar</h3>
+
+                <label>
+
+                    <input type="radio"
+                        name="basemap"
+                        value="satellite"
+                        checked>
+
+                    Esri World Imagery
+
+                </label>
+
+                <label>
+
+                    <input type="radio"
+                        name="basemap"
+                        value="osm">
+
+                    OpenStreetMap
+
+                </label>
+
+                <p class="hint">
+
+                    Zoom diperluas hingga level 22.
+                    Ketajaman citra mengikuti sumber data.
+
+                </p>
+
+                <label>
+
+                    <input type="checkbox"
+                        id="boundaryToggle"
+                        checked>
+
+                    Batas Administrasi Wanurejo
+
+                </label>
+
+                <button class="btn-light"
+                    onclick="goHome()">
+
+                    Kembali ke Wanurejo
+
+                </button>
+
+            </section>
+
+            <!-- DIGITASI OBJEK -->
+
+            <section class="panel">
+
+                <h3>✏ Digitasi Objek</h3>
+
+                <label for="objectName">
+                    Nama objek
+                </label>
+
+                <input type="text"
+                    id="objectName"
+                    placeholder="Contoh: Bidang Tanah A">
+
+                <label for="category">
+                    Kategori objek
+                </label>
+
+                <select id="category">
+
+                    <option>Bangunan</option>
+
+                    <option>Bidang Tanah</option>
+
+                    <option>Jalan</option>
+
+                    <option>Sungai</option>
+
+                    <option>Pertanian</option>
+
+                    <option>Permukiman</option>
+
+                    <option>Pariwisata</option>
+
+                    <option>Fasilitas Umum</option>
+
+                    <option>Ruang Terbuka Hijau</option>
+
+                    <option>Lainnya</option>
+
+                </select>
+
+                <label for="objectColor">
+                    Warna digitasi
+                </label>
+
+                <div class="color-row">
+
+                    <input type="color"
+                        id="objectColor"
+                        value="#16b8a6">
+
+                    <span class="hint">
+                        Pilih warna sebelum menggambar.
+                    </span>
+
+                </div>
+
+                <label for="lineWeight">
+                    Ketebalan garis
+                </label>
+
+                <select id="lineWeight">
+
+                    <option value="2">Tipis</option>
+
+                    <option value="3" selected>
+                        Normal
+                    </option>
+
+                    <option value="5">Tebal</option>
+
+                    <option value="7">
+                        Sangat Tebal
+                    </option>
+
+                </select>
+
+                <div class="button-grid">
+
+                    <button class="btn-primary"
+                        onclick="startDraw('marker')">
+
+                        📍 Titik
+
+                    </button>
+
+                    <button class="btn-primary"
+                        onclick="startDraw('polyline')">
+
+                        ∿ Garis
+
+                    </button>
+
+                    <button class="btn-primary"
+                        onclick="startDraw('polygon')">
+
+                        ▱ Poligon
+
+                    </button>
+
+                    <button class="btn-primary"
+                        onclick="startDraw('rectangle')">
+
+                        ▣ Persegi
+
+                    </button>
+
+                </div>
+
+                <button class="btn-light"
+                    onclick="cancelMode()">
+
+                    Batalkan Mode Digitasi
+
+                </button>
+
+                <p class="hint">
+
+                    Klik peta untuk menggambar objek.
+                    Untuk garis, klik titik terakhir.
+                    Untuk poligon, klik kembali titik awal.
+
+                </p>
+
+            </section>
+
+            <!-- PENGELOLAAN OBJEK -->
+
+            <section class="panel">
+
+                <h3>⚙ Pengelolaan Objek</h3>
+
+                <button class="btn-light"
+                    onclick="startEdit()">
+
+                    ✏ Edit Geometri
+
+                </button>
+
+                <button class="btn-accent"
+                    onclick="saveMode()">
+
+                    Simpan Perubahan
+
+                </button>
+
+                <button class="btn-light"
+                    onclick="startDelete()">
+
+                    Pilih dan Hapus Objek
+
+                </button>
+
+                <button class="btn-danger"
+                    onclick="clearObjects()">
+
+                    Hapus Semua Digitasi
+
+                </button>
+
+                <label>
+
+                    <input type="checkbox"
+                        id="showObjects"
+                        checked>
+
+                    Tampilkan hasil digitasi
+
+                </label>
+
+            </section>
+
+            <!-- INFORMASI LAYER -->
+
+            <section class="panel">
+
+                <h3>📊 Informasi Layer</h3>
+
+                <div class="stat-row">
+
+                    <span>Jumlah objek</span>
+
+                    <strong id="totalCount">0</strong>
+
+                </div>
+
+                <div class="stat-row">
+
+                    <span>Titik</span>
+
+                    <strong id="pointCount">0</strong>
+
+                </div>
+
+                <div class="stat-row">
+
+                    <span>Garis</span>
+
+                    <strong id="lineCount">0</strong>
+
+                </div>
+
+                <div class="stat-row">
+
+                    <span>Poligon</span>
+
+                    <strong id="polygonCount">0</strong>
+
+                </div>
+
+                <div class="stat-row">
+
+                    <span>Total luas</span>
+
+                    <strong id="totalArea">0 m²</strong>
+
+                </div>
+
+                <div class="stat-row">
+
+                    <span>Total panjang garis</span>
+
+                    <strong id="totalLength">0 m</strong>
+
+                </div>
+
+                <button class="btn-light"
+                    onclick="zoomObjects()">
+
+                    🔍 Zoom ke Semua Objek
+
+                </button>
+
+                <button class="btn-light"
+                    onclick="showTable()">
+
+                    ☷ Tampilkan Tabel Atribut
+
+                </button>
+
+            </section>
+
+            <!-- IMPORT DATA -->
+
+            <section class="panel">
+
+                <h3>📂 Import Data Spasial</h3>
+
+                <input type="file"
+                    id="importFile"
+                    accept=".geojson,.json">
+
+                <button class="btn-light"
+                    onclick="importGeoJSON()">
+
+                    Import GeoJSON
+
+                </button>
+
+                <p class="hint">
+
+                    Gunakan GeoJSON dengan koordinat
+                    WGS 84 (EPSG:4326).
+
+                </p>
+
+            </section>
+
+            <!-- DOWNLOAD DATA -->
+
+            <section class="panel">
+
+                <h3>📥 Download Hasil Digitasi</h3>
+
+                <button class="btn-accent"
+                    onclick="downloadGeoJSON()">
+
+                    Download GeoJSON
+
+                </button>
+
+                <button class="btn-primary"
+                    onclick="downloadShapefile()">
+
+                    Download Shapefile (.ZIP)
+
+                </button>
+
+                <p class="hint">
+
+                    Hasil ekspor dapat dibuka melalui
+                    QGIS atau ArcGIS.
+
+                    Sistem koordinat:
+                    WGS 84 (EPSG:4326).
+
+                </p>
+
+            </section>
+
+            <!-- INFORMASI KOORDINAT -->
+
+            <section class="panel">
+
+                <h3>📍 Informasi Koordinat</h3>
+
+                <div id="coordinateInfo"
+                    class="status-box">
+
+                    Klik lokasi pada peta untuk
+                    melihat koordinat.
+
+                </div>
+
+            </section>
+
+            <!-- STATUS -->
+
+            <section class="panel">
+
+                <h3>Status Workspace</h3>
+
+                <div id="status"
+                    class="status-box"
+                    role="status">
+
+                    Peta siap digunakan.
+
+                </div>
+
+                <p class="hint">
+
+                    Hasil digitasi disimpan pada browser
+                    perangkat ini. Unduh hasil digitasi
+                    sebagai cadangan.
+
+                </p>
+
+            </section>
+
+        </aside>
+
+        <!-- AREA PETA -->
+
+        <section class="map-container">
+
+            <div id="map"></div>
+
+            <div class="map-title">
+
+                <strong>
+                    Peta Pengolahan Data Spasial
+                </strong>
+
+                <span>
+                    Wanurejo, Borobudur, Kabupaten Magelang
+                </span>
+
+            </div>
+
+            <div class="coordinates" id="coordinates">
+
+                Lat: -7.610000 | Lon: 110.220000
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- ======================================
+         MODAL TABEL ATRIBUT
+    ======================================= -->
+
+    <div class="modal" id="attributeModal">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h2>Tabel Atribut Hasil Digitasi</h2>
+
+                <button class="btn-danger"
+                    onclick="closeTable()">
+
+                    Tutup ✕
+
+                </button>
+
+            </div>
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>No.</th>
+
+                            <th>Nama Objek</th>
+
+                            <th>Kategori</th>
+
+                            <th>Geometri</th>
+
+                            <th>Luas (m²)</th>
+
+                            <th>Panjang (m)</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="attributeBody"></tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ======================================
+         LIBRARY JAVASCRIPT
+    ======================================= -->
+
+    <script
+        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+    </script>
+
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js">
+    </script>
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/@turf/turf@6.5.0/turf.min.js">
+    </script>
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/@mapbox/shp-write@0.4.3/shpwrite.js">
+    </script>
+
+    <script>
+
+        // ======================================
+        // 1. INISIALISASI PETA
+        // ======================================
+
+        const HOME = [-7.61, 110.22];
+
+        const STORAGE_KEY = 'sip_wanurejo_digitasi_v1';
+
+        const map = L.map('map', {
+            maxZoom: 22
+        }).setView(HOME, 15);
+
+        const satellite = L.tileLayer(
+
+            'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+
+            {
+                maxZoom: 22,
+                maxNativeZoom: 19,
+                attribution: 'Tiles &copy; Esri and imagery providers'
+            }
+
+        ).addTo(map);
+
+        const osm = L.tileLayer(
+
+            'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+
+            {
+                maxZoom: 22,
+                maxNativeZoom: 19,
+                attribution: '&copy; OpenStreetMap contributors'
+            }
+
+        );
+
+        let currentBase = satellite;
+
+        L.control.scale({
+            imperial: false
+        }).addTo(map);
+
+        document.querySelectorAll(
+            'input[name="basemap"]'
+        ).forEach(input => {
+
+            input.addEventListener('change', function () {
+
+                map.removeLayer(currentBase);
+
+                currentBase =
+                    this.value === 'satellite'
+                    ? satellite
+                    : osm;
+
+                currentBase.addTo(map);
+
+            });
+
+        });
+
+
+        // ======================================
+        // 2. STATUS WORKSPACE
+        // ======================================
+
+        function setStatus(message) {
+
+            document.getElementById(
+                'status'
+            ).textContent = message;
+
+        }
+
+
+        // ======================================
+        // 3. BATAS ADMINISTRASI WANUREJO
+        // ======================================
+
+        let boundaryLayer = null;
+
+        async function loadBoundary() {
+
+            try {
+
+                const response = await fetch(
+                    './data/adm_wanurejo.geojson'
+                );
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        'HTTP ' + response.status
+                    );
+
+                }
+
+                const data = await response.json();
+
+                boundaryLayer = L.geoJSON(data, {
+
+                    interactive: false,
+
+                    style: {
+
+                        color: '#ffd54f',
+
+                        weight: 3,
+
+                        dashArray: '8 5',
+
+                        fill: false
+
+                    }
+
+                });
+
+                if (
+                    document.getElementById(
+                        'boundaryToggle'
+                    ).checked
+                ) {
+
+                    boundaryLayer.addTo(map);
+
+                }
+
+                goHome();
+
+            } catch (error) {
+
+                setStatus(
+
+                    'Batas Wanurejo belum dapat dimuat: ' +
+                    error.message +
+                    '. Fitur digitasi tetap dapat digunakan.'
+
+                );
+
+            }
+
+        }
+
+        document.getElementById(
+            'boundaryToggle'
+        ).addEventListener('change', function () {
+
+            if (!boundaryLayer) return;
+
+            if (this.checked) {
+
+                boundaryLayer.addTo(map);
+
+            } else {
+
+                map.removeLayer(boundaryLayer);
+
+            }
+
+        });
+
+        function goHome() {
+
+            if (
+                boundaryLayer &&
+                boundaryLayer.getBounds().isValid()
+            ) {
+
+                map.fitBounds(
+
+                    boundaryLayer.getBounds(),
+
+                    {
+                        padding: [25, 25]
+                    }
+
+                );
+
+            } else {
+
+                map.setView(HOME, 15);
+
+            }
+
+        }
+
+
+        // ======================================
+        // 4. LAYER HASIL DIGITASI
+        // ======================================
+
+        const drawnItems = new L.FeatureGroup();
+
+        drawnItems.addTo(map);
+
+        let activeMode = null;
+
+        let modeType = null;
+
+        let objectNumber = 1;
+
+
+        // ======================================
+        // 5. STYLE OBJEK
+        // ======================================
+
+        function getStyle() {
+
+            return {
+
+                color: document.getElementById(
+                    'objectColor'
+                ).value,
+
+                weight: Number(
+                    document.getElementById(
+                        'lineWeight'
+                    ).value
+                ),
+
+                fillOpacity: 0.35
+
+            };
+
+        }
+
+        function createPointIcon(color) {
+
+            const dot = document.createElement('div');
+
+            dot.style.cssText =
+
+                'width:16px;height:16px;' +
+                'border:2px solid white;' +
+                'border-radius:50%;' +
+                'box-shadow:0 1px 5px #0008;';
+
+            dot.style.backgroundColor = color;
+
+            return L.divIcon({
+
+                className: '',
+
+                html: dot,
+
+                iconSize: [16, 16],
+
+                iconAnchor: [8, 8]
+
+            });
+
+        }
+
+
+        // ======================================
+        // 6. MODE DIGITASI
+        // ======================================
+
+        function cancelMode() {
+
+            if (activeMode) {
+
+                if (
+                    modeType === 'edit' ||
+                    modeType === 'delete'
+                ) {
+
+                    activeMode.revertLayers();
+
+                }
+
+                activeMode.disable();
+
+                activeMode = null;
+
+                modeType = null;
+
+            }
+
+            setStatus('Mode dibatalkan.');
+
+        }
+
+        function ensureVisible() {
+
+            if (!map.hasLayer(drawnItems)) {
+
+                drawnItems.addTo(map);
+
+            }
+
+            document.getElementById(
+                'showObjects'
+            ).checked = true;
+
+        }
+
+        function startDraw(type) {
+
+            cancelMode();
+
+            ensureVisible();
+
+            const style = getStyle();
+
+            if (type === 'marker') {
+
+                activeMode = new L.Draw.Marker(map, {
+
+                    icon: createPointIcon(style.color)
+
+                });
+
+            }
+
+            if (type === 'polyline') {
+
+                activeMode = new L.Draw.Polyline(map, {
+
+                    shapeOptions: style
+
+                });
+
+            }
+
+            if (type === 'polygon') {
+
+                activeMode = new L.Draw.Polygon(map, {
+
+                    allowIntersection: false,
+
+                    showArea: true,
+
+                    shapeOptions: style
+
+                });
+
+            }
+
+            if (type === 'rectangle') {
+
+                activeMode = new L.Draw.Rectangle(map, {
+
+                    shapeOptions: style
+
+                });
+
+            }
+
+            modeType = 'draw';
+
+            activeMode.enable();
+
+            setStatus(
+
+                'Mode digitasi aktif. Silakan gambar objek pada peta.'
+
+            );
+
+        }
+
+
+        // ======================================
+        // 7. PERHITUNGAN SPASIAL
+        // ======================================
+
+        function calculateGeometry(feature) {
+
+            const type = feature.geometry.type;
+
+            let area = 0;
+
+            let length = 0;
+
+            if (
+
+                type === 'Polygon' ||
+
+                type === 'MultiPolygon'
+
+            ) {
+
+                area = turf.area(feature);
+
+            }
+
+            if (
+
+                type === 'LineString' ||
+
+                type === 'MultiLineString'
+
+            ) {
+
+                length = turf.length(feature, {
+
+                    units: 'kilometers'
+
+                }) * 1000;
+
+            }
+
+            return {
+
+                area_m2: Number(area.toFixed(2)),
+
+                area_ha: Number(
+                    (area / 10000).toFixed(6)
+                ),
+
+                length_m: Number(length.toFixed(2)),
+
+                length_km: Number(
+                    (length / 1000).toFixed(6)
+                )
+
+            };
+
+        }
+
+        function refreshAttributes(layer) {
+
+            const feature = layer.toGeoJSON();
+
+            const properties =
+
+                layer.feature?.properties || {};
+
+            layer.feature = {
+
+                type: 'Feature',
+
+                geometry: feature.geometry,
+
+                properties: {
+
+                    ...properties,
+
+                    geometry: feature.geometry.type,
+
+                    ...calculateGeometry(feature)
+
+                }
+
+            };
+
+            bindObjectPopup(layer);
+
+        }
+
+
+        // ======================================
+        // 8. POPUP INFORMASI OBJEK
+        // ======================================
+
+        function bindObjectPopup(layer) {
+
+            const p = layer.feature.properties;
+
+            const div = document.createElement('div');
+
+            const title = document.createElement('strong');
+
+            title.textContent = p.nama || 'Objek';
+
+            div.appendChild(title);
+
+            const rows = [
+
+                ['Kategori', p.kategori],
+
+                ['Geometri', p.geometry],
+
+                ['Luas (m²)', p.area_m2],
+
+                ['Luas (ha)', p.area_ha],
+
+                ['Panjang (m)', p.length_m]
+
+            ];
+
+            rows.forEach(([label, value]) => {
+
+                const row = document.createElement('div');
+
+                row.textContent =
+
+                    label + ': ' + (value ?? '-');
+
+                div.appendChild(row);
+
+            });
+
+            layer.bindPopup(div);
+
+        }
+
+
+        // ======================================
+        // 9. OBJEK BARU
+        // ======================================
+
+        map.on(L.Draw.Event.CREATED, function (event) {
+
+            const layer = event.layer;
+
+            const style = getStyle();
+
+            const name = document.getElementById(
+                'objectName'
+            ).value.trim();
+
+            layer.feature = {
+
+                type: 'Feature',
+
+                properties: {
+
+                    nama: name || 'Objek ' + objectNumber,
+
+                    kategori: document.getElementById(
+                        'category'
+                    ).value,
+
+                    warna: style.color,
+
+                    tebal: style.weight,
+
+                    tanggal: new Date().toISOString()
+
+                }
+
+            };
+
+            objectNumber++;
+
+            if (layer.setStyle) {
+
+                layer.setStyle(style);
+
+            }
+
+            if (layer instanceof L.Marker) {
+
+                layer.setIcon(
+                    createPointIcon(style.color)
+                );
+
+            }
+
+            drawnItems.addLayer(layer);
+
+            refreshAttributes(layer);
+
+            updateStatistics();
+
+            saveLocal();
+
+            activeMode = null;
+
+            modeType = null;
+
+            setStatus('Objek berhasil didigitasi.');
+
+        });
+
+
+        // ======================================
+        // 10. EDIT DAN HAPUS OBJEK
+        // ======================================
+
+        function startEdit() {
+
+            cancelMode();
+
+            if (!drawnItems.getLayers().length) {
+
+                setStatus('Belum ada objek untuk diedit.');
+
+                return;
+
+            }
+
+            ensureVisible();
+
+            activeMode = new L.EditToolbar.Edit(map, {
+
+                featureGroup: drawnItems,
+
+                selectedPathOptions: {
+
+                    maintainColor: true,
+
+                    opacity: 0.8
+
+                }
+
+            });
+
+            modeType = 'edit';
+
+            activeMode.enable();
+
+            setStatus(
+
+                'Geser titik atau vertex objek, lalu klik Simpan Perubahan.'
+
+            );
+
+        }
+
+        function startDelete() {
+
+            cancelMode();
+
+            if (!drawnItems.getLayers().length) {
+
+                setStatus('Belum ada objek untuk dihapus.');
+
+                return;
+
+            }
+
+            ensureVisible();
+
+            activeMode = new L.EditToolbar.Delete(map, {
+
+                featureGroup: drawnItems
+
+            });
+
+            modeType = 'delete';
+
+            activeMode.enable();
+
+            setStatus(
+
+                'Klik objek yang ingin dihapus, lalu klik Simpan Perubahan.'
+
+            );
+
+        }
+
+        function saveMode() {
+
+            if (
+
+                !activeMode ||
+
+                !['edit', 'delete'].includes(modeType)
+
+            ) {
+
+                setStatus(
+
+                    'Tidak ada perubahan yang perlu disimpan.'
+
+                );
+
+                return;
+
+            }
+
+            activeMode.save();
+
+            activeMode.disable();
+
+            activeMode = null;
+
+            modeType = null;
+
+            drawnItems.eachLayer(refreshAttributes);
+
+            updateStatistics();
+
+            saveLocal();
+
+            setStatus('Perubahan berhasil disimpan.');
+
+        }
+
+        function clearObjects() {
+
+            cancelMode();
+
+            if (
+
+                !confirm(
+                    'Apakah kamu yakin ingin menghapus semua hasil digitasi?'
+                )
+
+            ) return;
+
+            drawnItems.clearLayers();
+
+            updateStatistics();
+
+            saveLocal();
+
+            setStatus('Semua objek telah dihapus.');
+
+        }
+
+        document.getElementById(
+            'showObjects'
+        ).addEventListener('change', function () {
+
+            cancelMode();
+
+            if (this.checked) {
+
+                drawnItems.addTo(map);
+
+            } else {
+
+                map.removeLayer(drawnItems);
+
+            }
+
+        });
+
+
+        // ======================================
+        // 11. STATISTIK LAYER
+        // ======================================
+
+        function updateStatistics() {
+
+            let points = 0;
+
+            let lines = 0;
+
+            let polygons = 0;
+
+            let area = 0;
+
+            let length = 0;
+
+            drawnItems.eachLayer(layer => {
+
+                const f = layer.toGeoJSON();
+
+                const type = f.geometry.type;
+
+                const p = calculateGeometry(f);
+
+                if (type === 'Point') points++;
+
+                if (type === 'LineString') lines++;
+
+                if (type === 'Polygon') polygons++;
+
+                area += p.area_m2;
+
+                length += p.length_m;
+
+            });
+
+            document.getElementById(
+                'totalCount'
+            ).textContent = drawnItems.getLayers().length;
+
+            document.getElementById(
+                'pointCount'
+            ).textContent = points;
+
+            document.getElementById(
+                'lineCount'
+            ).textContent = lines;
+
+            document.getElementById(
+                'polygonCount'
+            ).textContent = polygons;
+
+            document.getElementById(
+                'totalArea'
+            ).textContent =
+
+                area.toLocaleString('id-ID', {
+
+                    maximumFractionDigits: 2
+
+                }) + ' m²';
+
+            document.getElementById(
+                'totalLength'
+            ).textContent =
+
+                length.toLocaleString('id-ID', {
+
+                    maximumFractionDigits: 2
+
+                }) + ' m';
+
+        }
+
+        function zoomObjects() {
+
+            if (drawnItems.getBounds().isValid()) {
+
+                map.fitBounds(
+
+                    drawnItems.getBounds(),
+
+                    {
+
+                        padding: [35, 35],
+
+                        maxZoom: 19
+
+                    }
+
+                );
+
+            } else {
+
+                setStatus('Belum ada objek digitasi.');
+
+            }
+
+        }
+
+
+        // ======================================
+        // 12. TABEL ATRIBUT
+        // ======================================
+
+        function showTable() {
+
+            const tbody = document.getElementById(
+                'attributeBody'
+            );
+
+            tbody.replaceChildren();
+
+            let no = 1;
+
+            drawnItems.eachLayer(layer => {
+
+                const p = layer.feature.properties;
+
+                const tr = document.createElement('tr');
+
+                const values = [
+
+                    no++,
+
+                    p.nama,
+
+                    p.kategori,
+
+                    p.geometry,
+
+                    p.area_m2,
+
+                    p.length_m
+
+                ];
+
+                values.forEach(value => {
+
+                    const td = document.createElement('td');
+
+                    td.textContent = value ?? '-';
+
+                    tr.appendChild(td);
+
+                });
+
+                tbody.appendChild(tr);
+
+            });
+
+            if (!tbody.children.length) {
+
+                const tr = document.createElement('tr');
+
+                const td = document.createElement('td');
+
+                td.colSpan = 6;
+
+                td.textContent = 'Belum ada hasil digitasi.';
+
+                tr.appendChild(td);
+
+                tbody.appendChild(tr);
+
+            }
+
+            document.getElementById(
+                'attributeModal'
+            ).style.display = 'flex';
+
+        }
+
+        function closeTable() {
+
+            document.getElementById(
+                'attributeModal'
+            ).style.display = 'none';
+
+        }
+
+
+        // ======================================
+        // 13. INFORMASI KOORDINAT
+        // ======================================
+
+        map.on('mousemove', function (event) {
+
+            document.getElementById(
+                'coordinates'
+            ).textContent =
+
+                'Lat: ' +
+
+                event.latlng.lat.toFixed(6) +
+
+                ' | Lon: ' +
+
+                event.latlng.lng.toFixed(6);
+
+        });
+
+        map.on('click', function (event) {
+
+            document.getElementById(
+                'coordinateInfo'
+            ).textContent =
+
+                'Latitude: ' +
+
+                event.latlng.lat.toFixed(6) +
+
+                ' | Longitude: ' +
+
+                event.latlng.lng.toFixed(6);
+
+        });
+
+
+        // ======================================
+        // 14. MEMBENTUK GEOJSON
+        // ======================================
+
+        function getGeoJSON() {
+
+            return drawnItems.toGeoJSON(10);
+
+        }
+
+
+        // ======================================
+        // 15. PENYIMPANAN BROWSER
+        // ======================================
+
+        function saveLocal() {
+
+            try {
+
+                localStorage.setItem(
+
+                    STORAGE_KEY,
+
+                    JSON.stringify(getGeoJSON())
+
+                );
+
+            } catch (error) {
+
+                alert(
+
+                    'Penyimpanan browser gagal. ' +
+                    'Segera unduh hasil digitasi sebagai cadangan.'
+
+                );
+
+            }
+
+        }
+
+
+        // ======================================
+        // 16. MEMASUKKAN DATA GEOJSON
+        // ======================================
+
+        function addGeoJSON(data) {
+
+            const features = turf.flatten(data).features;
+
+            const supported = [
+
+                'Point',
+
+                'LineString',
+
+                'Polygon'
+
+            ];
+
+            if (
+
+                !features.length ||
+
+                features.some(f =>
+
+                    !f.geometry ||
+
+                    !supported.includes(f.geometry.type)
+
+                )
+
+            ) {
+
+                throw new Error(
+                    'Geometri GeoJSON tidak didukung atau kosong.'
+                );
+
+            }
+
+            function validCoordinates(coords) {
+
+                if (!Array.isArray(coords)) return false;
+
+                if (typeof coords[0] === 'number') {
+
+                    return (
+
+                        Number.isFinite(coords[0]) &&
+
+                        Number.isFinite(coords[1]) &&
+
+                        Math.abs(coords[0]) <= 180 &&
+
+                        Math.abs(coords[1]) <= 90
+
+                    );
+
+                }
+
+                return coords.length > 0 &&
+
+                    coords.every(validCoordinates);
+
+            }
+
+            if (features.some(f =>
+
+                !validCoordinates(f.geometry.coordinates)
+
+            )) {
+
+                throw new Error(
+                    'Koordinat tidak valid. Gunakan EPSG:4326.'
+                );
+
+            }
+
+            const collection = {
+
+                type: 'FeatureCollection',
+
+                features
+
+            };
+
+            const group = L.geoJSON(collection, {
+
+                style: function (feature) {
+
+                    return {
+
+                        color: feature.properties?.warna ||
+
+                            '#16b8a6',
+
+                        weight: Number(
+                            feature.properties?.tebal
+                        ) || 3,
+
+                        fillOpacity: 0.35
+
+                    };
+
+                },
+
+                pointToLayer: function (feature, latlng) {
+
+                    return L.marker(latlng, {
+
+                        icon: createPointIcon(
+
+                            feature.properties?.warna ||
+
+                            '#16b8a6'
+
+                        )
+
+                    });
+
+                }
+
+            });
+
+            group.eachLayer(layer => {
+
+                const p = layer.feature.properties || {};
+
+                layer.feature.properties = {
+
+                    ...p,
+
+                    nama: p.nama || 'Objek ' + objectNumber,
+
+                    kategori: p.kategori || 'Lainnya',
+
+                    warna: p.warna || '#16b8a6',
+
+                    tebal: Number(p.tebal) || 3
+
+                };
+
+                objectNumber++;
+
+                refreshAttributes(layer);
+
+            });
+
+            group.eachLayer(layer => {
+
+                drawnItems.addLayer(layer);
+
+            });
+
+            updateStatistics();
+
+        }
+
+        function restoreLocal() {
+
+            try {
+
+                const saved = localStorage.getItem(
+                    STORAGE_KEY
+                );
+
+                if (saved) {
+
+                    const data = JSON.parse(saved);
+
+                    if (data.features?.length) {
+
+                        addGeoJSON(data);
+
+                    }
+
+                }
+
+            } catch (error) {
+
+                setStatus(
+
+                    'Data lokal gagal dipulihkan: ' +
+
+                    error.message
+
+                );
+
+            }
+
+        }
+
+
+        // ======================================
+        // 17. IMPORT GEOJSON
+        // ======================================
+
+        async function importGeoJSON() {
+
+            const file = document.getElementById(
+                'importFile'
+            ).files[0];
+
+            if (!file) {
+
+                alert('Pilih file GeoJSON terlebih dahulu.');
+
+                return;
+
+            }
+
+            try {
+
+                cancelMode();
+
+                const data = JSON.parse(
+
+                    await file.text()
+
+                );
+
+                addGeoJSON(data);
+
+                ensureVisible();
+
+                saveLocal();
+
+                zoomObjects();
+
+                setStatus('Import GeoJSON berhasil.');
+
+            } catch (error) {
+
+                setStatus(
+
+                    'Import gagal: ' + error.message
+
+                );
+
+            }
+
+        }
+
+
+        // ======================================
+        // 18. DOWNLOAD FILE
+        // ======================================
+
+        function downloadFile(blob, filename) {
+
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+
+            a.href = url;
+
+            a.download = filename;
+
+            document.body.appendChild(a);
+
+            a.click();
+
+            a.remove();
+
+            setTimeout(() => {
+
+                URL.revokeObjectURL(url);
+
+            }, 1000);
+
+        }
+
+        function checkExport() {
+
+            if (activeMode) {
+
+                alert(
+
+                    'Selesaikan atau batalkan mode aktif terlebih dahulu.'
+
+                );
+
+                return false;
+
+            }
+
+            if (!drawnItems.getLayers().length) {
+
+                alert('Belum ada hasil digitasi.');
+
+                return false;
+
+            }
+
+            return true;
+
+        }
+
+
+        // ======================================
+        // 19. DOWNLOAD GEOJSON
+        // ======================================
+
+        function downloadGeoJSON() {
+
+            if (!checkExport()) return;
+
+            const blob = new Blob(
+
+                [
+
+                    JSON.stringify(
+                        getGeoJSON(),
+                        null,
+                        2
+                    )
+
+                ],
+
+                {
+
+                    type: 'application/geo+json'
+
+                }
+
+            );
+
+            downloadFile(
+
+                blob,
+
+                'Digitasi_SIP_Wanurejo.geojson'
+
+            );
+
+            setStatus('GeoJSON berhasil disiapkan.');
+
+        }
+
+
+        // ======================================
+        // 20. DOWNLOAD SHAPEFILE ZIP
+        // ======================================
+
+        async function downloadShapefile() {
+
+            if (!checkExport()) return;
+
+            try {
+
+                const writer = window.shpwrite;
+
+                if (!writer || !writer.zip) {
+
+                    throw new Error(
+
+                        'Library Shapefile belum berhasil dimuat.'
+
+                    );
+
+                }
+
+                const data = getGeoJSON();
+
+                // Nama field DBF maksimal 10 karakter.
+
+                data.features.forEach(feature => {
+
+                    const p = feature.properties;
+
+                    feature.properties = {
+
+                        nama: String(p.nama || ''),
+
+                        kategori: String(p.kategori || ''),
+
+                        warna: String(p.warna || ''),
+
+                        tebal: Number(p.tebal || 3),
+
+                        luas_m2: Number(p.area_m2 || 0),
+
+                        luas_ha: Number(p.area_ha || 0),
+
+                        panjang_m: Number(p.length_m || 0)
+
+                    };
+
+                });
+
+                const zip = await writer.zip(data, {
+
+                    folder: 'SIP_Wanurejo',
+
+                    outputType: 'blob',
+
+                    compression: 'DEFLATE',
+
+                    types: {
+
+                        point: 'Titik_Wanurejo',
+
+                        polyline: 'Garis_Wanurejo',
+
+                        polygon: 'Poligon_Wanurejo'
+
+                    }
+
+                });
+
+                const blob = zip instanceof Blob
+
+                    ? zip
+
+                    : new Blob([zip], {
+
+                        type: 'application/zip'
+
+                    });
+
+                downloadFile(
+
+                    blob,
+
+                    'Shapefile_SIP_Wanurejo.zip'
+
+                );
+
+                setStatus(
+
+                    'Shapefile ZIP berhasil disiapkan.'
+
+                );
+
+            } catch (error) {
+
+                setStatus(
+
+                    'Ekspor Shapefile gagal: ' +
+
+                    error.message
+
+                );
+
+                alert(
+
+                    'Ekspor Shapefile gagal. ' +
+
+                    'Gunakan ekspor GeoJSON sebagai alternatif.'
+
+                );
+
+            }
+
+        }
+
+
+        // ======================================
+        // 21. MENJALANKAN WORKSPACE
+        // ======================================
+
+        restoreLocal();
+
+        updateStatistics();
+
+        loadBoundary();
+
+    </script>
+
+</body>
+
+</html>
